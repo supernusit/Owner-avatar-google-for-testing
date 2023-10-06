@@ -18,4 +18,4 @@ _Working_...
 
 ## License
 
-**Google for Testing - CLI** is an open-source software licensed under the MIT license.
+**Google for Testing - CLI** is an open-source software licensed under the [MIT license](./LICENSE.md).
