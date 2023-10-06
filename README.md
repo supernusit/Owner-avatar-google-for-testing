@@ -1,12 +1,11 @@
-<h1><center>Google for Testing - CLI</center></h1>
+# Google for Testing - CLI
 
-<p align="center">
-  <a href="https://packagist.org/packages/asciito/google-for-testing"><img src="https://img.shields.io/packagist/dt/asciito/google-for-testing.svg" alt="Total Downloads"></a>
-  <a href="https://packagist.org/packages/asciito/google-for-testing"><img src="https://img.shields.io/packagist/v/asciito/google-for-testing.svg?label=stable" alt="Latest Stable Version"></a>
-  <a href="https://packagist.org/packages/asciito/google-for-testing"><img src="https://img.shields.io/packagist/l/asciito/google-for-testing.svg" alt="License"></a>
-</p>
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/asciito/google-for-testing.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/asciito/google-for-testing)
+[![Licence on Packagist](https://img.shields.io/packagist/l/asciito/google-for-testing.svg?label=Packagist%20License&style=flat-square)](https://packagist.org/packages/asciito/google-for-testing)
+[![Tests](https://img.shields.io/github/actions/workflow/status/asciito/google-for-testing/run-tests.yml?label=Tests&style=flat-square)](https://github.com/asciito/google-for-testing/actions/workflows/run-tests.yml)
+[![Total Downloads](https://img.shields.io/packagist/dt/asciito/google-for-testing.svg?label=Downloads&style=flat-square)](https://packagist.org/packages/asciito/google-for-testing)
 
-<h4> <center>This is a <bold>personal project</bold>, but the community can also contribute to this project</center></h4>
+This is a **personal project**, but the community can also contribute to this project, and is build with [Laravel Zero](https://github.com/laravel-zero/laravel-zero).
 
 ---
 
