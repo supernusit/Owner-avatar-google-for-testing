@@ -9,7 +9,14 @@ This is a **personal project**, but the community can also contribute to this pr
 
 ---
 
-_Working_...
+## The why?
+
+It's simple, because I need a tool to manage my Chrome Driver and Chrome Browser, but... the reason behind that
+is that in my work, I need to automate some interaction in a webpage, and because that page doesn't have an API, and doing some manual tasks
+is painfully boring... and, trying to spin-up a Chrome Driver server
+with the correct Browser Version, is painful (I **HATE** manual tasks), I decided to create this tiny CLI (in commands, not in size) to help me.
+
+**I HATE MANUAL TASKS**
 
 ## Documentation
 
