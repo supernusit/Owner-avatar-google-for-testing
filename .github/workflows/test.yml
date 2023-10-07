@@ -1,12 +1,12 @@
-name: test-cli
-run-name: Testing CLI
+name: cli-test
+run-name: CLI Test
 on:
   push:
     branches:
       - tests
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -17,8 +17,8 @@ jobs:
           php-version: '8.2'
           extensions: zip, mbstring
 
-      - name: Setup Dependencies
+      - name: Install Dependencies
         run: composer install --no-interaction --no-progress
-      
+
       - name: Run Test
         run: vendor/bin/pest
