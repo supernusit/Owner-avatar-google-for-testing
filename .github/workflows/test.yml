@@ -18,7 +18,7 @@ jobs:
           extensions: zip, mbstring
 
       - name: Setup Dependencies
-        run: composer install --no-interaction --no-progress --prefer-source
+        run: composer install --no-interaction --no-progress
       
       - name: Run Test
-        run: php google-for-testing test
+        run: vendor/bin/pest
