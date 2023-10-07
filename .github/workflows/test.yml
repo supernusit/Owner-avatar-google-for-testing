@@ -3,7 +3,7 @@ run-name: Testing CLI
 on:
   push:
     branches:
-      - test
+      - tests
 jobs:
   test:
     runs-on: ubuntu-latest
