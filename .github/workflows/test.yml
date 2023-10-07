@@ -1,0 +1,21 @@
+name: test-cli
+run-name: Testing CLI
+on:
+  push:
+    branches:
+      - test
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: zip, mbstring
+      
+      - name: Run Test
+        run: php google-for-testing test
