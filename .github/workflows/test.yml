@@ -1,12 +1,14 @@
 name: cli-test
 run-name: CLI Test
+
 on:
-  push:
+  pull_request:
     branches:
-      - tests
+      - develop
+
 jobs:
   test:
-    runs-on: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
