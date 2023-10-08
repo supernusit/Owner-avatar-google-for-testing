@@ -1,7 +1,13 @@
 {
     "name": "asciito/google-for-testing",
     "description": "The CLI to manage Chrome Browser and Chrome Driver",
-    "keywords": ["cli", "google", "google for testing", "testing", "console"],
+    "keywords": [
+        "cli",
+        "google",
+        "google for testing",
+        "testing",
+        "console"
+    ],
     "type": "project",
     "license": "MIT",
     "authors": [
@@ -45,5 +51,7 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "bin": ["google-for-testing"]
+    "bin": [
+        "google-for-testing"
+    ]
 }
