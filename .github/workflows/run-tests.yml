@@ -1,5 +1,5 @@
-name: cli-test
-run-name: CLI Test
+name: Run Tests
+run-name: Running tests on ${{ github.base_ref }}
 
 on:
   pull_request:
