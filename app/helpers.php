@@ -36,9 +36,7 @@ if (! function_exists('download')) {
 
         File::delete($file);
 
-        $encoded_url = urlencode($url);
-
-        $response = Http::get($encoded_url, ['stream' => true])->toPsrResponse();
+        $response = Http::withOptions(['stream' => true])->get($url)->toPsrResponse();
 
         $body = $response->getBody();
 
