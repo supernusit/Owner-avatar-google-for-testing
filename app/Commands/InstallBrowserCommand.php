@@ -79,6 +79,8 @@ class InstallBrowserCommand extends Command
             Log::error($e->getMessage());
 
             $result = false;
+        } finally {
+            File::delete($filename);
         }
 
         if (! $result) {
