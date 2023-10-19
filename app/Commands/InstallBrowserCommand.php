@@ -61,7 +61,7 @@ class InstallBrowserCommand extends Command
 
         $version = $downloadable->getVersion();
 
-        $filename = $this->filename($os);
+        $filename = $this->getBasePath('chrome-'.$this->platforms[$os].'.zip');
 
         try {
             $result = true;
@@ -126,13 +126,13 @@ class InstallBrowserCommand extends Command
         return GoogleForTesting::getVersion($version);
     }
 
-    protected function filename(string $os): string
+    protected function getBasePath(?string $path = null): string
     {
         $folder = join_paths(getenv('HOME'), '.google-for-testing');
 
         File::ensureDirectoryExists($folder);
 
-        return $folder.DIRECTORY_SEPARATOR.'chrome-'.$this->platforms[$os].'.zip';
+        return join_paths($folder, $path);
     }
 
     public function message(string $text, string $type = 'line'): void
