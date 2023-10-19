@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use LaravelZero\Framework\Commands\Command;
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\outro;
 use function Laravel\Prompts\search;
@@ -18,7 +17,7 @@ use function Laravel\Prompts\warning;
 use function Laravel\Prompts\info;
 use function Termwind\render;
 
-class InstallBrowserCommand extends Command
+class InstallBrowserCommand extends InstallCommand
 {
     /**
      * The signature of the command.
@@ -126,35 +125,5 @@ class InstallBrowserCommand extends Command
         );
 
         return GoogleForTesting::getVersion($version);
-    }
-
-    protected function getBasePath(?string $path = null): string
-    {
-        $folder = join_paths(getenv('HOME'), '.google-for-testing');
-
-        File::ensureDirectoryExists($folder);
-
-        return join_paths($folder, $path);
-    }
-
-    public function message(string $text, string $type = 'line'): void
-    {
-        $color = match ($type) {
-            'success' => 'bg-green',
-            'warning' => 'bg-yellow',
-            'error'   => 'bg-red',
-            'info'    => 'bg-blue',
-            default   => 'bg-gray-600',
-        };
-
-        $type = str($type)->upper();
-
-        render(<<<HTML
-        <p>
-            <span class="text-white $color px-2 mr-2">$type</span>
-
-            <span>$text</span>
-        </p>
-        HTML);
     }
 }
