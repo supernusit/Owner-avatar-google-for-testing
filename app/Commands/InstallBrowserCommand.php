@@ -34,7 +34,7 @@ class InstallBrowserCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Install Google Browser from';
+    protected $description = 'Install Google Browser';
 
 
     protected array $platforms = [
