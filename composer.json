@@ -22,7 +22,7 @@
         "mockery/mockery": "^1.5.1",
         "pestphp/pest": "^2.5",
         "pestphp/pest-plugin-laravel": "^2.2",
-        "spatie/laravel-ray": "^1.33",
+        "spatie/laravel-ray": "^1.33"
     },
     "autoload": {
         "psr-4": {
