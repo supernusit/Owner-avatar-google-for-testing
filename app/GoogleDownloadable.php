@@ -39,6 +39,21 @@ class GoogleDownloadable
         return $item['url'];
     }
 
+
+    /**
+     * @throws \RuntimeException if the required platform doesn't exist
+     */
+    public function getChromeDriverURL(string $platform): string
+    {
+        $item = collect($this->driverDownloads)->first(fn (array $item) => $item['platform'] === $platform);
+
+        if (empty($item)) {
+            throw new \RuntimeException("The URL for the platform [$platform] you requested, it's not available");
+        }
+
+        return $item['url'];
+    }
+
     public static function make(string $version, string $revision, array $browserDownloads, array $driverDownloads): static
     {
         return new static($version, $revision, $browserDownloads, $driverDownloads);
