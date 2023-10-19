@@ -9,8 +9,8 @@ class GoogleDownloadable
     protected function __construct(
         protected string $version,
         protected string $revision,
-        protected array $driverDownloads,
-        protected array $browserDownloads
+        protected array $browserDownloads,
+        protected array $driverDownloads
     ) {
         //
     }
@@ -39,9 +39,9 @@ class GoogleDownloadable
         return $item['url'];
     }
 
-    public static function make(string $version, string $revision, array $driverDownloads, array $browserDownloads): static
+    public static function make(string $version, string $revision, array $browserDownloads, array $driverDownloads): static
     {
-        return new static($version, $revision, $driverDownloads, $browserDownloads);
+        return new static($version, $revision, $browserDownloads, $driverDownloads);
     }
 
     public static function makeFromArray(array $data): static
@@ -50,9 +50,9 @@ class GoogleDownloadable
 
         $version = $data['version'];
         $revision = $data['revision'];
-        $driverDownloads = $downloads['chromedriver'];
         $browserDownloads = $downloads['chrome'];
+        $driverDownloads = $downloads['chromedriver'] ?? [];
 
-        return static::make($version, $revision, $driverDownloads, $browserDownloads);
+        return static::make($version, $revision, $browserDownloads, $driverDownloads);
     }
 }
