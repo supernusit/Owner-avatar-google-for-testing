@@ -33,12 +33,11 @@ class GoogleDownloadable
         $item = collect($this->browserDownloads)->first(fn (array $item) => $item['platform'] === $platform);
 
         if (empty($item)) {
-            throw new \RuntimeException("The URL for the platform [$platform] you requested, it's not available");
+            throw new \RuntimeException("The URL for Google Chrome Browser for platform [$platform], it's not available");
         }
 
         return $item['url'];
     }
-
 
     /**
      * @throws \RuntimeException if the required platform doesn't exist
@@ -48,7 +47,7 @@ class GoogleDownloadable
         $item = collect($this->driverDownloads)->first(fn (array $item) => $item['platform'] === $platform);
 
         if (empty($item)) {
-            throw new \RuntimeException("The URL for the platform [$platform] you requested, it's not available");
+            throw new \RuntimeException("The URL for Google Chrome Driver for platform [$platform], it's not available");
         }
 
         return $item['url'];
