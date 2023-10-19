@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\File;
+use Symfony\Component\Finder\Finder;
 use function Pest\Laravel\artisan;
 
 it('download the latest browser version', function () {
@@ -9,7 +10,14 @@ it('download the latest browser version', function () {
         ->expectsOutputToContain('downloaded')
         ->assertSuccessful();
 
-    expect(File::exists(join_paths(env('HOME'), '.google-for-testing', 'chrome-mac-arm64.zip')))
+    $finder = new Finder;
+
+    $finder
+        ->directories()
+        ->in(join_paths(env('HOME'), '.google-for-testing'))
+        ->name('chrome*');
+
+    expect($finder->hasResults())
         ->toBeTrue();
 });
 

@@ -7,6 +7,7 @@ use App\GoogleDownloadable;
 use App\OperatingSystem;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use LaravelZero\Framework\Commands\Command;
 use function Laravel\Prompts\error;
@@ -60,10 +61,31 @@ class InstallBrowserCommand extends Command
 
         $version = $downloadable->getVersion();
 
-        spin(
-            callback: fn () => download($downloadable->getChromeBrowserURL($this->platforms[$os]), $this->filename($os)),
-            message: "Downloading Google Chrome Browser [$version]"
-        );
+        $filename = $this->filename($os);
+
+        try {
+            $result = true;
+
+            spin(
+                callback: fn () => download($downloadable->getChromeBrowserURL($this->platforms[$os]), $filename),
+                message: "Downloading Google Chrome Browser [$version]"
+            );
+
+            spin(
+                callback: fn () => unzip($filename),
+                message: 'Unzipping Google Chrome Browser',
+            );
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            $result = false;
+        }
+
+        if (! $result) {
+            error("Unable to download/install Google Chrome Browser [$version]");
+
+            return self::FAILURE;
+        }
 
         outro("Google Chrome Browser [$version] downloaded");
 
