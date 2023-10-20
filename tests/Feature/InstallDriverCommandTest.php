@@ -10,9 +10,6 @@ use function Pest\Laravel\artisan;
 
 it('download default driver version', function () {
     Http::fake();
-    File::partialMock()
-        ->shouldReceive('append')
-        ->andReturn(true);
 
     $google = GoogleForTesting::partialMock();
     $downloadable = Mockery::mock(GoogleDownloadable::class);
@@ -80,9 +77,6 @@ it('it download the driver version [118.0.5672.0]', function () {
 
 it('download the driver on other path', function () {
     Http::fake();
-    File::partialMock()
-        ->shouldReceive('append')
-        ->andReturn(true);
 
     $google = GoogleForTesting::partialMock();
     $downloadable = Mockery::mock(GoogleDownloadable::class);

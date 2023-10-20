@@ -10,9 +10,6 @@ use function Pest\Laravel\artisan;
 
 it('download default browser version', function () {
     Http::fake();
-    File::partialMock()
-        ->shouldReceive('append')
-        ->andReturn(true);
 
     $google = GoogleForTesting::partialMock();
     $downloadable = Mockery::mock(GoogleDownloadable::class);
@@ -80,9 +77,6 @@ it('it download the browser version [113.0.5672.0]', function () {
 
 it('download the browser on other path', function () {
     Http::fake();
-    File::partialMock()
-        ->shouldReceive('append')
-        ->andReturn(true);
 
     $google = GoogleForTesting::partialMock();
     $downloadable = Mockery::mock(GoogleDownloadable::class);
