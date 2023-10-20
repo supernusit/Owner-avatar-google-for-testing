@@ -57,18 +57,24 @@ class GoogleDownloadable
         return $item['url'];
     }
 
-    public function download(int $component, string $platform, string $filename, bool $unzip = false): void
+    public function download(int $component, string $to, string $platform, bool $unzip = false): void
     {
         if ($component & static::BROWSER) {
-            download($browser = $this->getChromeBrowserURL($platform), $filename);
+            $url = $this->getChromeBrowserURL($platform);
+            $filename = join_paths($to, Str::afterLast($url, '/'));
 
-            $unzip && unzip($browser);
+            download($url, $filename);
+
+            $unzip && unzip($filename);
         }
 
         if ($component & static::DRIVER) {
-            download($driver = $this->getChromeDriverURL($platform), $filename);
+            $url = $this->getChromeDriverURL($platform);
+            $filename = join_paths($to, Str::afterLast($url, '/'));
 
-            $unzip && unzip($driver);
+            download($url, $filename);
+
+            $unzip && unzip($filename);
         }
     }
 
