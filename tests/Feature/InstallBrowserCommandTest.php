@@ -4,8 +4,8 @@ use App\Facades\GoogleForTesting;
 use App\GoogleDownloadable;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
-
 use Illuminate\Support\Facades\Log;
+
 use function Pest\Laravel\artisan;
 
 it('download default browser version', function () {
