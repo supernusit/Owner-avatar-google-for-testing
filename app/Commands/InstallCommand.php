@@ -49,13 +49,13 @@ abstract class InstallCommand extends Command
         return GoogleForTesting::getVersion($version);
     }
 
-    protected function getBasePath(string $path = null): string
+    protected function getBasePath(?string $path = null): string
     {
         $folder = join_paths(getenv('HOME'), '.google-for-testing');
 
         File::ensureDirectoryExists($folder);
 
-        return join_paths($folder, $path);
+        return join_paths($folder, $path ?? '');
     }
 
     public function message(string $text, string $type = 'line'): void
