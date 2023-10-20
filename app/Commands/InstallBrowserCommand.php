@@ -7,6 +7,7 @@ use App\OperatingSystem;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
+use Illuminate\Support\Str;
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\spin;
 
@@ -53,25 +54,19 @@ class InstallBrowserCommand extends InstallCommand
 
         $version = $downloadable->getVersion();
 
-        $filename = $this->getFilename($os);
-
         try {
             spin(
-                callback: fn () => $downloadable->download(GoogleDownloadable::BROWSER, $this->platforms[$os], $filename),
+                callback: fn () => $downloadable->download(GoogleDownloadable::BROWSER, $this->getDownloadDirectory(), $this->platforms[$os], true),
                 message: "Downloading Google Chrome Browser [$version]"
             );
 
-            $dir = dirname($filename);
-
-            $this->message("Google Chrome Browser unzip it on [$dir]", 'info');
+            $this->message("Google Chrome Browser unzip it on [{$this->getDownloadDirectory()}]", 'info');
         } catch (\Throwable $e) {
             Log::error($e->getMessage());
 
             error("Unable to download/install Google Chrome Browser [$version]");
 
             return self::FAILURE;
-        } finally {
-            File::delete($filename);
         }
 
         $this->message("Google Chrome Browser [$version] downloaded", 'success');
@@ -79,14 +74,12 @@ class InstallBrowserCommand extends InstallCommand
         return self::SUCCESS;
     }
 
-    protected function getFilename(string $os): string
+    protected function getDownloadDirectory(): string
     {
-        $filename = 'chrome-'.$this->platforms[$os].'.zip';
-
         if (! $this->option('path')) {
-            return $this->getBasePath($filename);
+            return $this->getBasePath();
         }
 
-        return join_paths($this->option('path'), $filename);
+        return $this->option('path');
     }
 }
