@@ -4,6 +4,7 @@ use App\Facades\GoogleForTesting;
 use App\GoogleDownloadable;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+
 use function Pest\Laravel\artisan;
 
 it('download the latest browser version', function () {
@@ -72,7 +73,7 @@ it('download the browser on other path', function () {
         ->doesntExpectOutputToContain("There' no versions available for [200.0.0.0]")
         ->expectsOutputToContain('Downloading Google Chrome Browser [200.0.0.0]')
         ->expectsOutputToContain('Google Chrome Browser [200.0.0.0] downloaded')
-        ->expectsOutputToContain("Google Chrome Browser unzip it on [/some/dir/to/download]")
+        ->expectsOutputToContain('Google Chrome Browser unzip it on [/some/dir/to/download]')
         ->assertSuccessful();
 });
 

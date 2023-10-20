@@ -2,20 +2,13 @@
 
 namespace App\Commands;
 
-use App\Facades\GoogleForTesting;
-use App\GoogleDownloadable;
 use App\OperatingSystem;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\outro;
-use function Laravel\Prompts\search;
 use function Laravel\Prompts\spin;
-use function Laravel\Prompts\warning;
-use function Laravel\Prompts\info;
-use function Termwind\render;
 
 class InstallDriverCommand extends InstallCommand
 {
@@ -34,7 +27,6 @@ class InstallDriverCommand extends InstallCommand
      * @var string
      */
     protected $description = 'Install Google Driver';
-
 
     protected array $platforms = [
         'linux' => 'linux64',

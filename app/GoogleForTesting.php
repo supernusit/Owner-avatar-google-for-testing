@@ -2,9 +2,9 @@
 
 namespace App;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 
 class GoogleForTesting
 {
@@ -32,7 +32,7 @@ class GoogleForTesting
         $response = Http::get(static::$downloads);
 
         $exact = collect($response->json('versions'))
-            ->first(fn(array $item) => $item['version'] == $version);
+            ->first(fn (array $item) => $item['version'] == $version);
 
         if (empty($exact)) {
             return null;
