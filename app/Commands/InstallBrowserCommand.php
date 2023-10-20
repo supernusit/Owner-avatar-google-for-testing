@@ -71,13 +71,4 @@ class InstallBrowserCommand extends InstallCommand
 
         return self::SUCCESS;
     }
-
-    protected function getDownloadDirectory(): string
-    {
-        if (! $this->option('path')) {
-            return $this->getBasePath();
-        }
-
-        return $this->option('path');
-    }
 }
