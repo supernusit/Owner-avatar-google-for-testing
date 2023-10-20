@@ -71,7 +71,7 @@ class InstallBrowserCommand extends InstallCommand
 
             $dir = dirname($filename);
 
-            $this->message("Google Chrome Browser unzip on [$dir]", 'info');
+            $this->message("Google Chrome Browser unzip it on [$dir]", 'info');
         } catch (\Throwable $e) {
             Log::error($e->getMessage());
 
