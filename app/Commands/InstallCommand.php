@@ -78,4 +78,13 @@ abstract class InstallCommand extends Command
         </p>
         HTML);
     }
+
+    protected function getDownloadDirectory(): string
+    {
+        if (! $this->option('path')) {
+            return $this->getBasePath();
+        }
+
+        return $this->option('path');
+    }
 }

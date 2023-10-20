@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\GoogleDownloadable;
 use App\OperatingSystem;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +20,8 @@ class InstallDriverCommand extends InstallCommand
      */
     protected $signature = 'install:driver
                             {--ver=115.0.5763.0 : Install specific version}
-                            {--latest : Install the latest version}';
+                            {--latest : Install the latest version}
+                            {--path= : Specify the path where to download the driver}';
 
     /**
      * The description of the command.
@@ -52,28 +54,19 @@ class InstallDriverCommand extends InstallCommand
 
         $version = $downloadable->getVersion();
 
-        $filename = $this->getBasePath('chromedriver-'.$this->platforms[$os].'.zip');
-
         try {
-            $result = true;
-
             spin(
-                callback: fn () => download($downloadable->getChromeDriverURL($this->platforms[$os]), $filename),
+                callback: fn () => $downloadable->download(GoogleDownloadable::DRIVER, $this->getDownloadDirectory(), $this->platforms[$os], true),
                 message: "Downloading Google Chrome Driver [$version]"
             );
 
-            spin(
-                callback: fn () => unzip($filename),
-                message: 'Unzipping Google Chrome Driver',
-            );
-        } catch (\Exception $e) {
+            $this->message("Google Chrome Driver unzip it on [{$this->getDownloadDirectory()}]", 'info');
+        } catch (\Throwable $e) {
             Log::error($e->getMessage());
 
             error("Unable to download/install Google Chrome Driver [$version]");
 
             return self::FAILURE;
-        } finally {
-            File::delete($filename);
         }
 
         outro("Google Chrome Driver [$version] downloaded");
