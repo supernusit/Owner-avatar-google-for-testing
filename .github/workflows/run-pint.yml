@@ -5,6 +5,10 @@ on:
     paths:
       - "**.php"
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   pint-code-style:
     runs-on: ubuntu-latest

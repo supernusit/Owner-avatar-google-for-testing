@@ -16,7 +16,7 @@ if (! function_exists('join_paths')) {
             array_map(fn (string $p) => trim($p, DIRECTORY_SEPARATOR), $paths)
         );
 
-        return join(DIRECTORY_SEPARATOR, [rtrim($first, DIRECTORY_SEPARATOR), ...$paths]);
+        return implode(DIRECTORY_SEPARATOR, [rtrim($first, DIRECTORY_SEPARATOR), ...$paths]);
     }
 }
 
@@ -36,9 +36,7 @@ if (! function_exists('download')) {
 
         File::delete($file);
 
-        $encoded_url = urlencode($url);
-
-        $response = Http::get($encoded_url, ['stream' => true])->toPsrResponse();
+        $response = Http::withOptions(['stream' => true])->get($url)->toPsrResponse();
 
         $body = $response->getBody();
 
@@ -63,9 +61,8 @@ if (! function_exists('unzip')) {
      * This function will attempt to unzip the given zip file name into the given location, but if the location
      * is not provided, we'll use the file directory.
      *
-     * @param string $filename The file name of the ZIP file
-     * @param ?string $to The location where to extract the content
-     * @return void
+     * @param  string  $filename The file name of the ZIP file
+     * @param  ?string  $to The location where to extract the content
      */
     function unzip(string $filename, string $to = null): void
     {
