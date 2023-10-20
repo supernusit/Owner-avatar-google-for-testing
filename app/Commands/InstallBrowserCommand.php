@@ -63,8 +63,6 @@ class InstallBrowserCommand extends InstallCommand
         $filename = $this->getBasePath('chrome-'.$this->platforms[$os].'.zip');
 
         try {
-            $result = true;
-
             spin(
                 callback: fn () => download($downloadable->getChromeBrowserURL($this->platforms[$os]), $filename),
                 message: "Downloading Google Chrome Browser [$version]"
@@ -77,53 +75,15 @@ class InstallBrowserCommand extends InstallCommand
         } catch (\Exception $e) {
             Log::error($e->getMessage());
 
-            $result = false;
-        } finally {
-            File::delete($filename);
-        }
-
-        if (! $result) {
             error("Unable to download/install Google Chrome Browser [$version]");
 
             return self::FAILURE;
+        } finally {
+            File::delete($filename);
         }
 
         outro("Google Chrome Browser [$version] downloaded");
 
         return self::SUCCESS;
-    }
-
-    protected function version(): GoogleDownloadable|null
-    {
-        if ($this->option('latest')) {
-             return GoogleForTesting::getLatestVersion();
-        }
-
-        $version = $this->option('ver');
-
-        $downloadable = spin(
-            callback: fn () => GoogleForTesting::getVersion($version),
-            message: "Searching for version [$version]"
-        );
-
-        if (filled($downloadable)) {
-            return $downloadable;
-        }
-
-        $versions = GoogleForTesting::getMilestone(Str::before($version, '.'));
-
-        if (empty($versions)) {
-            return null;
-        }
-
-        warning("There isn't an exact version [$version]");
-
-        $version = search(
-            label: "We found similar versions, please choose one",
-            options: fn () => $versions->mapWithKeys(fn ($d) => [$d->getVersion() => $d->getVersion()])->all(),
-            placeholder: 'Choose your prefer version'
-        );
-
-        return GoogleForTesting::getVersion($version);
     }
 }
