@@ -9,8 +9,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-
 use Symfony\Component\Console\Input\InputOption;
+
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\search;
 use function Laravel\Prompts\spin;
