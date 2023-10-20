@@ -15,6 +15,8 @@ it('download the latest browser version', function () {
     $downloadable->shouldReceive('getVersion')
         ->andReturn('200.0.0.0');
 
+    $downloadable->shouldReceive('download');
+
     $downloadable->shouldReceive('getChromeBrowserURL')
         ->andReturn('https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/200.0.0.0/linux64/chrome-linux64.zip');
 
@@ -37,8 +39,7 @@ it('it download the browser version [113.0.5672.0]', function () {
     $downloadable->shouldReceive('getVersion')
         ->andReturn('113.0.5672.0');
 
-    $downloadable->shouldReceive('getChromeBrowserURL')
-        ->andReturn('https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/113.0.5672.0/linux64/chrome-linux64.zip');
+    $downloadable->shouldReceive('download');
 
     $google->shouldReceive('getVersion')
         ->andReturn($downloadable);

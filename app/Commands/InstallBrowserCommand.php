@@ -26,7 +26,8 @@ class InstallBrowserCommand extends InstallCommand
      */
     protected $signature = 'install:browser
                             {--ver=115.0.5763.0 : Install specific version}
-                            {--latest : Install the latest version}';
+                            {--latest : Install the latest version}
+                            {--path= : Specify the path where to download the browser}';
 
     /**
      * The description of the command.
@@ -60,19 +61,18 @@ class InstallBrowserCommand extends InstallCommand
 
         $version = $downloadable->getVersion();
 
-        $filename = $this->getBasePath('chrome-'.$this->platforms[$os].'.zip');
+        $filename = $this->getFilename($os);
 
         try {
             spin(
-                callback: fn () => download($downloadable->getChromeBrowserURL($this->platforms[$os]), $filename),
+                callback: fn () => $downloadable->download(GoogleDownloadable::BROWSER, $this->platforms[$os], $filename),
                 message: "Downloading Google Chrome Browser [$version]"
             );
 
-            spin(
-                callback: fn () => unzip($filename),
-                message: 'Unzipping Google Chrome Browser',
-            );
-        } catch (\Exception $e) {
+            $dir = dirname($filename);
+
+            $this->message("Google Chrome Browser unzip on [$dir]", 'info');
+        } catch (\Throwable $e) {
             Log::error($e->getMessage());
 
             error("Unable to download/install Google Chrome Browser [$version]");
@@ -82,8 +82,19 @@ class InstallBrowserCommand extends InstallCommand
             File::delete($filename);
         }
 
-        outro("Google Chrome Browser [$version] downloaded");
+        $this->message("Google Chrome Browser [$version] downloaded", 'success');
 
         return self::SUCCESS;
+    }
+
+    protected function getFilename(string $os): string
+    {
+        $filename = 'chrome-'.$this->platforms[$os].'.zip';
+
+        if (! $this->option('path')) {
+            return $this->getBasePath($filename);
+        }
+
+        return join_paths($this->option('path'), $filename);
     }
 }

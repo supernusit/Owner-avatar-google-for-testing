@@ -6,6 +6,10 @@ use Illuminate\Support\Str;
 
 class GoogleDownloadable
 {
+    const BROWSER = 1;
+
+    const DRIVER = 2;
+
     protected function __construct(
         protected string $version,
         protected string $revision,
@@ -51,6 +55,21 @@ class GoogleDownloadable
         }
 
         return $item['url'];
+    }
+
+    public function download(int $component, string $platform, string $filename, bool $unzip = false): void
+    {
+        if ($component & static::BROWSER) {
+            download($browser = $this->getChromeBrowserURL($platform), $filename);
+
+            $unzip && unzip($browser);
+        }
+
+        if ($component & static::DRIVER) {
+            download($driver = $this->getChromeDriverURL($platform), $filename);
+
+            $unzip && unzip($driver);
+        }
     }
 
     public static function make(string $version, string $revision, array $browserDownloads, array $driverDownloads): static
