@@ -5,7 +5,33 @@ use App\GoogleDownloadable;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 
+use Illuminate\Support\Facades\Log;
 use function Pest\Laravel\artisan;
+
+it('download default browser version', function () {
+    Http::fake();
+    File::partialMock()
+        ->shouldReceive('append')
+        ->andReturn(true);
+
+    $google = GoogleForTesting::partialMock();
+    $downloadable = Mockery::mock(GoogleDownloadable::class);
+
+    $downloadable->shouldReceive('getVersion')
+        ->andReturn('115.0.5763.0');
+
+    $downloadable->shouldReceive('download');
+
+    $google->shouldReceive('getVersion')
+        ->andReturn($downloadable);
+
+    artisan('install:browser')
+        ->doesntExpectOutputToContain("There' no versions available for [115.0.5763.0]")
+        ->expectsOutputToContain('Downloading Google Chrome Browser [115.0.5763.0]')
+        ->expectsOutputToContain('Google Chrome Browser [115.0.5763.0] downloaded')
+        ->expectsOutputToContain('Google Chrome Browser unzip it on')
+        ->assertSuccessful();
+});
 
 it('download the latest browser version', function () {
     Http::fake();
@@ -78,9 +104,27 @@ it('download the browser on other path', function () {
 });
 
 it('try to download a pre-existing browser version', function () {
+    Http::fake();
 
-})->todo();
+    Log::partialMock()
+        ->shouldReceive('error')
+        ->with('The file [chrome-linux.zip] already exists');
 
-it('try to download a non existing browser version', function () {
+    $google = GoogleForTesting::partialMock();
+    $downloadable = Mockery::mock(GoogleDownloadable::class);
 
-})->todo();
+    $downloadable
+        ->shouldReceive('getVersion')
+        ->andReturn('115.0.5763.0');
+
+    $downloadable
+        ->shouldReceive('download')
+        ->andThrow(\Exception::class, 'The file [chrome-linux.zip] already exists');
+
+    $google->shouldReceive('getVersion')
+        ->andReturn($downloadable);
+
+    artisan('install:browser')
+        ->doesntExpectOutputToContain('Google Chrome Browser [115.0.5763.0] downloaded')
+        ->assertFailed();
+});
