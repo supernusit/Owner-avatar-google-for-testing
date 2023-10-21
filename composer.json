@@ -55,5 +55,5 @@
     "bin": [
         "builds/google-for-testing"
     ],
-    "version": "v0.3.0"
+    "version": "0.4.0"
 }

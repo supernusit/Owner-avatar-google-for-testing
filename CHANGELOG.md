@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/asciito/google-for-testing/compare/v0.3.0...v0.4.0) (2023-10-21)
+
+
+### Features
+
+* configure for distribute via packagist ([d596c53](https://github.com/asciito/google-for-testing/commit/d596c53210dbf2c4b2da2f0d58b98d07fda35db5))
+
+
+### Bug Fixes
+
+* add ignore builds folder ([5c18777](https://github.com/asciito/google-for-testing/commit/5c187779d9315e0160be98e0c7a9ca02099b17c7))
+
 ## [0.3.0](https://github.com/asciito/google-for-testing/compare/v0.2.0...v0.3.0) (2023-10-20)
 
 
