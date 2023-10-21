@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/asciito/google-for-testing/compare/v0.4.0...v0.4.1) (2023-10-21)
+
+
+### Bug Fixes
+
+* change composer.json ([361a41e](https://github.com/asciito/google-for-testing/commit/361a41ee92208043f838d7936eef3aecb655b5e4))
+
 ## [0.4.0](https://github.com/asciito/google-for-testing/compare/v0.3.0...v0.4.0) (2023-10-21)
 
 
