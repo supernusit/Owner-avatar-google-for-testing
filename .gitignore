@@ -7,3 +7,5 @@
 composer.lock
 /storage/logs/*
 !/storage/logs/.gitkeep
+/builds/*
+!/builds/.gitkeep
