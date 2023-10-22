@@ -4,9 +4,11 @@ namespace App\Commands;
 
 use App\OperatingSystem;
 use Illuminate\Console\Command;
+use Illuminate\Process\PendingProcess;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 
+use Illuminate\Support\Str;
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\intro;
@@ -26,6 +28,12 @@ class DriverManagerCommand extends Command
         'mac-arm' => 'mac-arm64',
         'mac-intel' => 'mac-x64',
         'win' => 'win64',
+    ];
+
+    protected array $commands = [
+        'start' => "./chromedriver --log-level=ALL --port=9515 &",
+        'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2}'",
+        'stop' => 'kill -9 {pid}'
     ];
 
     public function handle(): int
@@ -49,19 +57,15 @@ class DriverManagerCommand extends Command
 
     protected function start(): int
     {
-        $process = Process::path($this->getChromeDriverDirectory())
-            ->run("ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2}'");
-
-        if (filled($process->output())) {
-            warning('[PID: '.trim($process->output())."]: There's a server running already on port [9515]");
+        if ($pid = $this->getProcessID()) {
+            warning("[PID: $pid]: There's a server running already on port [9515]");
 
             return self::FAILURE;
         }
 
         intro('Stating Google Chrome Driver on port [9515]');
 
-        Process::path($this->getChromeDriverDirectory())
-            ->run('./chromedriver --log-level=ALL --port=9515 &');
+        $this->command($this->commands['start'])->run();
 
         info('Google Chrome Driver server is up and running');
 
@@ -72,10 +76,7 @@ class DriverManagerCommand extends Command
     {
         intro('Stopping Google Chrome Driver on port [9515]');
 
-        $process = Process::path($this->getChromeDriverDirectory())
-            ->run("ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2}'");
-
-        $pid = trim($process->output());
+        $pid = $this->getProcessID();
 
         if (empty($pid)) {
             warning("There's no server to stop on port [9515]");
@@ -83,8 +84,7 @@ class DriverManagerCommand extends Command
             return self::FAILURE;
         }
 
-        Process::path($this->getChromeDriverDirectory())
-            ->run("kill -9 $pid");
+        $this->command(Str::replace('{pid}', $pid, $this->commands['stop']))->run();
 
         info('Google Chrome Driver server stopped on port [9515]');
 
@@ -95,10 +95,7 @@ class DriverManagerCommand extends Command
     {
         intro('Restarting Google Chrome Driver on port [9515]');
 
-        $process = Process::path($this->getChromeDriverDirectory())
-            ->run("ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2}'");
-
-        $pid = trim($process->output());
+        $pid = $this->getProcessID();
 
         if (empty($pid)) {
             info("There's no server to restart on port [9515]");
@@ -106,11 +103,9 @@ class DriverManagerCommand extends Command
             return self::FAILURE;
         }
 
-        Process::path($this->getChromeDriverDirectory())
-            ->run("kill -9 $pid");
+        $this->command(Str::replace('{pid}', $pid, $this->commands['stop']))->run();
 
-        Process::path($this->getChromeDriverDirectory())
-            ->run('./chromedriver --log-level=ALL --port=9515 &');
+        $this->command($this->commands['start'])->run();
 
         info('Google Chrome Driver server restarted on port [9515]');
 
@@ -121,10 +116,7 @@ class DriverManagerCommand extends Command
     {
         intro('Getting Google Chrome Driver status on port [9515]');
 
-        $process = Process::path($this->getChromeDriverDirectory())
-            ->run("ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2}'");
-
-        $pid = trim($process->output());
+        $pid = $this->getProcessID();
 
         if (empty($pid)) {
             info("There's no server available on port [9515]");
@@ -137,7 +129,7 @@ class DriverManagerCommand extends Command
         $data = $response->json('value');
 
         if (array_key_exists('error', $data) || ! $data['ready']) {
-            error('There was a problem, we cannot establish connection with the server');
+            error('There was a problem, we cannot estAblish connection with the server');
 
             return self::FAILURE;
         }
@@ -145,6 +137,18 @@ class DriverManagerCommand extends Command
         info('Google Chrome server status: [OK]');
 
         return self::SUCCESS;
+    }
+
+    protected function command(string $cmd): PendingProcess
+    {
+        return Process::command($cmd)->path($this->getChromeDriverDirectory());
+    }
+
+    protected function getProcessID(): int|null
+    {
+        $process = $this->command($this->commands['pid'])->run();
+
+        return (int) trim($process->output()) ?: null;
     }
 
     protected function getChromeDriverDirectory(): string
