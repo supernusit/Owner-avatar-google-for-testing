@@ -129,7 +129,7 @@ class DriverManagerCommand extends Command
         $data = $response->json('value');
 
         if (array_key_exists('error', $data) || ! $data['ready']) {
-            error('There was a problem, we cannot estAblish connection with the server');
+            error('There was a problem, we cannot establish connection with the server');
 
             return self::FAILURE;
         }
