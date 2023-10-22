@@ -35,7 +35,7 @@ it('stop a Chrome Driver server', function () {
 
 it('restart a Chrome Driver server', function () {
     Process::fake([
-        'ps aux *' => '10101',
+        'ps aux *' => Process::result('10101'),
         '*' => Process::result(),
     ]);
 
@@ -82,7 +82,7 @@ it('can\'t start a new Chrome Driver server if there\'s one already started', fu
 });
 
 it('can\'t stop a Chrome Driver server if there\'s no server already started', function () {
-    Process::fake([]);
+    Process::fake();
 
     artisan('manage:driver', ['action' => 'stop'])
         ->expectsOutputToContain("There's no server to stop")
@@ -90,7 +90,7 @@ it('can\'t stop a Chrome Driver server if there\'s no server already started', f
 });
 
 it('can\'t restart a Chrome Driver server if there\'s no server already started', function () {
-    Process::fake([]);
+    Process::fake();
 
     artisan('manage:driver', ['action' => 'stop'])
         ->expectsOutputToContain("There's no server to stop on port [9515]")
@@ -98,7 +98,7 @@ it('can\'t restart a Chrome Driver server if there\'s no server already started'
 });
 
 it('can\'t get the status of Chrome Driver server if there\'s no server already started', function () {
-    Process::fake([]);
+    Process::fake();
 
     artisan('manage:driver', ['action' => 'restart'])
         ->expectsOutputToContain("There's no server to restart on port [9515]")
