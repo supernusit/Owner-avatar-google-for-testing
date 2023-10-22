@@ -7,8 +7,8 @@ use Illuminate\Console\Command;
 use Illuminate\Process\PendingProcess;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
-
 use Illuminate\Support\Str;
+
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\intro;
@@ -31,9 +31,9 @@ class DriverManagerCommand extends Command
     ];
 
     protected array $commands = [
-        'start' => "./chromedriver --log-level=ALL --port=9515 &",
+        'start' => './chromedriver --log-level=ALL --port=9515 &',
         'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2}'",
-        'stop' => 'kill -9 {pid}'
+        'stop' => 'kill -9 {pid}',
     ];
 
     public function handle(): int
@@ -144,7 +144,7 @@ class DriverManagerCommand extends Command
         return Process::command($cmd)->path($this->getChromeDriverDirectory());
     }
 
-    protected function getProcessID(): int|null
+    protected function getProcessID(): ?int
     {
         $process = $this->command($this->commands['pid'])->run();
 
