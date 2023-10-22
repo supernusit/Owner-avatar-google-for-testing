@@ -95,7 +95,7 @@ it('can\'t restart a Chrome Driver server if there\'s no server already started'
     artisan('manage:driver', ['action' => 'stop'])
         ->expectsOutputToContain("There's no server to stop on port [9515]")
         ->assertFailed();
-})->todo();
+});
 
 it('can\'t get the status of Chrome Driver server if there\'s no server already started', function () {
     Process::fake([]);
