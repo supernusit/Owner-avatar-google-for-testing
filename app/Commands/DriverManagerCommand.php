@@ -15,7 +15,7 @@ use function Laravel\Prompts\select;
 use function Laravel\Prompts\warning;
 
 
-class ManagerDriverCommand extends Command
+class DriverManagerCommand extends Command
 {
     protected $signature = 'manage:driver
                             {action? : The action you want to perform on Google\'s Chrome Driver}
