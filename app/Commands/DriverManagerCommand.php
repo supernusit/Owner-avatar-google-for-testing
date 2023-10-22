@@ -6,14 +6,12 @@ use App\OperatingSystem;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Str;
+
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\intro;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\warning;
-
 
 class DriverManagerCommand extends Command
 {
@@ -44,7 +42,7 @@ class DriverManagerCommand extends Command
             'stop' => $this->stop(),
             'restart' => $this->restart(),
             'status' => $this->status(),
-    };
+        };
 
         return $result;
     }
@@ -55,7 +53,7 @@ class DriverManagerCommand extends Command
             ->run("ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2}'");
 
         if (filled($process->output())) {
-            warning("[PID: ".trim($process->output())."]: There's a server running already on port [9515]");
+            warning('[PID: '.trim($process->output())."]: There's a server running already on port [9515]");
 
             return self::FAILURE;
         }
@@ -121,7 +119,7 @@ class DriverManagerCommand extends Command
 
     protected function status(): int
     {
-        intro("Getting Google Chrome Driver status on port [9515]");
+        intro('Getting Google Chrome Driver status on port [9515]');
 
         $process = Process::path($this->getChromeDriverDirectory())
             ->run("ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2}'");
@@ -139,12 +137,12 @@ class DriverManagerCommand extends Command
         $data = $response->json('value');
 
         if (array_key_exists('error', $data) || ! $data['ready']) {
-            error("There was a problem, we cannot establish connection with the server");
+            error('There was a problem, we cannot establish connection with the server');
 
             return self::FAILURE;
         }
 
-        info("Google Chrome server status: [OK]");
+        info('Google Chrome server status: [OK]');
 
         return self::SUCCESS;
     }
@@ -155,7 +153,7 @@ class DriverManagerCommand extends Command
             ?? join_paths(
                 getenv('HOME'),
                 '.google-for-testing',
-                'chromedriver-' . $this->platforms[OperatingSystem::id()],
+                'chromedriver-'.$this->platforms[OperatingSystem::id()],
             );
     }
 }
