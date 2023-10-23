@@ -127,6 +127,11 @@ it('stop all the available Chrome Driver servers', function () {
     ]);
 
     artisan('manage:driver', ['action' => 'kill'])
+        ->expectsTable(['PID', 'PORT'], collect($data)->map(function (string $value) {
+            $values = explode(" ", $value);
+
+            return ['pid' => $values[0], 'port' => $values[1]];
+        }))
         ->expectsConfirmation('Are you sure you want to do this?', 'yes')
         ->expectsOutputToContain('Stopping all the Google Chrome Driver servers that are available in the system')
         ->expectsOutputToContain('Stopping Google Chrome Driver [PID: 9991]')

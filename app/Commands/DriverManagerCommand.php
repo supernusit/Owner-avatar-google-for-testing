@@ -46,8 +46,8 @@ class DriverManagerCommand extends Command
             'stop' => 'Stop a server',
             'restart' => 'Restart a server',
             'status' => 'Status of a server',
-            'list' => 'List all the server available in the system',
-            'kill' => 'Kill all the servers available in the system',
+            'list' => 'List all the server',
+            'kill' => 'Kill all the servers',
         ]);
 
         $callable = match ($action) {
@@ -178,6 +178,8 @@ class DriverManagerCommand extends Command
 
             return self::FAILURE;
         }
+
+        $this->table(['PID', 'PORT'], $pids);
 
         if (! $this->confirm('Are you sure you want to do this?')) {
             return self::SUCCESS;
