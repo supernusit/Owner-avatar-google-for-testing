@@ -206,7 +206,7 @@ class DriverManagerCommand extends Command
     {
         $process = $this->command(Str::replace('{options}', '--port '.$port, $this->commands['pid']))->run();
 
-        $output = explode(" ", trim($process->output()));
+        $output = explode(' ', trim($process->output()));
 
         return (int) $output[0] ?: null;
     }
@@ -222,7 +222,7 @@ class DriverManagerCommand extends Command
         $raw = explode("\n", trim($process->output()));
 
         return collect($raw)->map(function (string $data) {
-            $data = explode(" ", $data);
+            $data = explode(' ', $data);
 
             return ['pid' => $data[0], 'port' => $data[1]];
         });
