@@ -4,7 +4,9 @@ namespace App\Commands;
 
 use App\OperatingSystem;
 use Illuminate\Console\Command;
+use Illuminate\Process\FakeProcessResult;
 use Illuminate\Process\PendingProcess;
+use Illuminate\Process\ProcessResult;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
@@ -78,7 +80,7 @@ class DriverManagerCommand extends Command
 
         intro("Stating Google Chrome Driver on port [$port]");
 
-        $this->command(Str::replace('{port}', $port, $this->commands['start']))->run();
+        $this->command('start', ['{port}' => $port]);
 
         info('Google Chrome Driver server is up and running');
 
@@ -97,7 +99,7 @@ class DriverManagerCommand extends Command
             return self::FAILURE;
         }
 
-        $this->command(Str::replace('{pid}', $pid, $this->commands['stop']))->run();
+        $this->command('stop', ['{pid}' => $pid]);
 
         info("Google Chrome Driver server stopped on port [$port]");
 
@@ -116,9 +118,9 @@ class DriverManagerCommand extends Command
             return self::FAILURE;
         }
 
-        $this->command(Str::replace('{pid}', $pid, $this->commands['stop']))->run();
+        $this->command('stop', ['{pid}' => $pid]);
 
-        $this->command(Str::replace('{port}', $port, $this->commands['start']))->run();
+        $this->command('start', ['{port}' => $port]);
 
         info("Google Chrome Driver server restarted on port [$port]");
 
@@ -164,8 +166,6 @@ class DriverManagerCommand extends Command
             return self::FAILURE;
         }
 
-        ray($result);
-
         $this->table(['PID', 'PORT'], $result);
 
         return self::SUCCESS;
@@ -173,9 +173,9 @@ class DriverManagerCommand extends Command
 
     protected function kill(): int
     {
-        $result = $this->command(Str::replace('{options}', '', $this->commands['pid']))->run();
+        $pids = $this->getProcessIDs();
 
-        if (empty($result->output())) {
+        if (empty($pids)) {
             warning("There' no servers to kill");
 
             return self::FAILURE;
@@ -187,24 +187,30 @@ class DriverManagerCommand extends Command
 
         info('Stopping all the Google Chrome Driver servers that are available in the system');
 
-        collect(explode("\n", trim($result->output())))
-            ->each(function (string $pid) {
-                info("Stopping Google Chrome Driver [PID: $pid]");
+        $pids
+            ->each(function (array $data) {
+                info("Stopping Google Chrome Driver [PID: {$data['pid']}]");
 
-                $this->command(Str::replace('{pid}', $pid, $this->commands['stop']))->run();
+                $this->command('stop', ['{pid}' => $data['pid']]);
             });
 
         return self::SUCCESS;
     }
 
-    protected function command(string $cmd): PendingProcess
+    protected function command(string $cmd, array $with)
     {
-        return Process::command($cmd)->path($this->getChromeDriverDirectory());
+        return Process::command(
+            Str::replace(
+                collect($with)->keys(),
+                collect($with)->values(),
+                $this->commands[$cmd]
+            )
+        )->path($this->getChromeDriverDirectory())->run();
     }
 
     protected function getProcessID(string $port): ?int
     {
-        $process = $this->command(Str::replace('{options}', '--port '.$port, $this->commands['pid']))->run();
+        $process = $this->command('pid', ['{options}' => '--port '.$port]);
 
         $output = explode(' ', trim($process->output()));
 
@@ -213,7 +219,7 @@ class DriverManagerCommand extends Command
 
     protected function getProcessIDs(): ?Collection
     {
-        $process = $this->command(Str::replace('{options}', '', $this->commands['pid']))->run();
+        $process = $this->command('pid', ['{pid}' => '']);
 
         if (empty($process->output())) {
             return null;

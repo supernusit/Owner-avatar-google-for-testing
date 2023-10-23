@@ -119,8 +119,10 @@ it('start 4 Chrome Driver servers', function () {
 });
 
 it('stop all the available Chrome Driver servers', function () {
+    $data = ['9991 1111', '9992 1112', '9993 1113', '9994 1114'];
+
     Process::fake([
-        'ps aux *' => Process::result(Arr::join([9991, 9992, 9993, 9994], "\n")),
+        'ps aux *' => Process::result(Arr::join($data, "\n")),
         '*' => Process::result(),
     ]);
 
