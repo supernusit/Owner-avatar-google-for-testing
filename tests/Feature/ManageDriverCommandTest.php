@@ -5,8 +5,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
-
 use Laravel\Prompts\Prompt;
+
 use function Pest\Laravel\artisan;
 
 it('start a Chrome Driver server', function () {
@@ -149,7 +149,7 @@ it('list all the available Chrome Driver servers', function () {
     ]);
 
     Process::fake([
-        'ps aux | grep *' => Process::result($data->map(fn ($port, $pid) => "$pid $port")->join("\n"))
+        'ps aux | grep *' => Process::result($data->map(fn ($port, $pid) => "$pid $port")->join("\n")),
     ]);
 
     Prompt::fallbackWhen($this->app->runningUnitTests());

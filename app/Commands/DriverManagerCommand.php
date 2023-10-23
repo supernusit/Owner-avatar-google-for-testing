@@ -167,7 +167,7 @@ class DriverManagerCommand extends Command
 
         $rows = collect(explode("\n", trim($result->output())))
             ->map(function (string $value) {
-                $values = explode(" ", trim($value));
+                $values = explode(' ', trim($value));
 
                 // PID => PORT
                 return [$values[0], Str::remove('--port=', $values[1])];
