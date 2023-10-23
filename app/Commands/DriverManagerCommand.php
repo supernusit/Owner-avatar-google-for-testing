@@ -37,6 +37,7 @@ class DriverManagerCommand extends Command
     protected array $commands = [
         'start' => './chromedriver --log-level=ALL --port={port} &',
         'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL --port={port}' | awk '{print $2}'",
+        'pids' => "ps aux | grep '[c]hromedriver --log-level=ALL' | awk '{print $2}'",
         'stop' => 'kill -9 {pid}',
     ];
 
@@ -47,6 +48,7 @@ class DriverManagerCommand extends Command
             'stop' => 'Stop a server',
             'restart' => 'Restart a server',
             'status' => 'Status of a server',
+            'kill' => 'Kill all the servers available in the system',
         ]);
 
         $callable = match ($action) {
@@ -54,9 +56,10 @@ class DriverManagerCommand extends Command
             'stop' => $this->stop(...),
             'restart' => $this->restart(...),
             'status' => $this->status(...),
+            'kill' => $this->kill(...),
         };
 
-        return $this->getPorts()->map(fn (string $port) => $callable(port: $port))
+        return $this->getPorts()->map(fn (string $port) => $callable($port))
             // Reduce the result of every callable to a single SUCCESS or FAILURE value
             ->reduce(fn (int $results, int $result) => $results && $result, self::FAILURE);
     }
@@ -141,6 +144,33 @@ class DriverManagerCommand extends Command
         }
 
         info('Google Chrome server status: [OK]');
+
+        return self::SUCCESS;
+    }
+
+    public function kill(): int
+    {
+        $result = $this->command($this->commands['pids'])->run();
+
+        if (empty($result->output())) {
+            warning("There' no servers to kill");
+
+            return self::FAILURE;
+        }
+
+        if (! $this->confirm("Are you sure you want to do this?")) {
+            return self::SUCCESS;
+        }
+
+        info('Stopping all the Google Chrome Driver servers that are available in the system');
+
+        collect(explode("\n", trim($result->output())))
+            ->each(function (string $pid) {
+                info("Stopping Google Chrome Driver [PID: $pid]");
+
+                $this->command(Str::replace('{pid}', $pid, $this->commands['stop']))->run();
+            });
+
 
         return self::SUCCESS;
     }
