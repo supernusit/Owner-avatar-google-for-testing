@@ -36,8 +36,7 @@ class DriverManagerCommand extends Command
 
     protected array $commands = [
         'start' => './chromedriver --log-level=ALL --port={port} &',
-        'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL --port={port}' | awk '{print $2}'",
-        'pids' => "ps aux | grep '[c]hromedriver --log-level=ALL' | awk '{print $2}'",
+        'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL {port}' | awk '{print $2}'",
         'stop' => 'kill -9 {pid}',
     ];
 
@@ -150,7 +149,8 @@ class DriverManagerCommand extends Command
 
     public function kill(): int
     {
-        $result = $this->command($this->commands['pids'])->run();
+        $result = $this->command(Str::replace('{port}', '', $this->commands['pid']))->run();
+;
 
         if (empty($result->output())) {
             warning("There' no servers to kill");
@@ -182,7 +182,7 @@ class DriverManagerCommand extends Command
 
     protected function getProcessID(string $port): ?int
     {
-        $process = $this->command(Str::replace('{port}', $port, $this->commands['pid']))->run();
+        $process = $this->command(Str::replace('{port}', '--port='.$port, $this->commands['pid']))->run();
 
         return (int) trim($process->output()) ?: null;
     }
