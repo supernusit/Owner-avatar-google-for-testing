@@ -35,10 +35,9 @@ class DriverManagerCommand extends Command
     ];
 
     protected array $commands = [
-        'start' => './chromedriver --log-level=ALL --port={port} &',
-        'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL {port}' | awk '{print $2}'",
+        'start' => './chromedriver --log-level=ALL --port {port} &',
+        'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL {options}' | awk '{print $2,$14}'",
         'stop' => 'kill -9 {pid}',
-        'list' => "ps aux | grep '[c]hromedriver --log-level=ALL' | awk '{print $2,$13}'",
     ];
 
     public function handle(): int
@@ -157,30 +156,24 @@ class DriverManagerCommand extends Command
     {
         info('Listing all the servers available');
 
-        $result = $this->command($this->commands['list'])->run();
+        $result = $this->getProcessIDs();
 
-        if (empty($result->output())) {
+        if (empty($result)) {
             warning("There' no servers available to list");
 
             return self::FAILURE;
         }
 
-        $rows = collect(explode("\n", trim($result->output())))
-            ->map(function (string $value) {
-                $values = explode(' ', trim($value));
+        ray($result);
 
-                // PID => PORT
-                return [$values[0], Str::remove('--port=', $values[1])];
-            });
-
-        $this->table(['PID', 'PORT'], $rows);
+        $this->table(['PID', 'PORT'], $result);
 
         return self::SUCCESS;
     }
 
     protected function kill(): int
     {
-        $result = $this->command(Str::replace('{port}', '', $this->commands['pid']))->run();
+        $result = $this->command(Str::replace('{options}', '', $this->commands['pid']))->run();
 
         if (empty($result->output())) {
             warning("There' no servers to kill");
@@ -211,20 +204,28 @@ class DriverManagerCommand extends Command
 
     protected function getProcessID(string $port): ?int
     {
-        $process = $this->command(Str::replace('{port}', '--port='.$port, $this->commands['pid']))->run();
+        $process = $this->command(Str::replace('{options}', '--port '.$port, $this->commands['pid']))->run();
 
-        return (int) trim($process->output()) ?: null;
+        $output = explode(" ", trim($process->output()));
+
+        return (int) $output[0] ?: null;
     }
 
     protected function getProcessIDs(): ?Collection
     {
-        $process = $this->command(Str::replace('{port}', '', $this->commands['pid']))->run();
+        $process = $this->command(Str::replace('{options}', '', $this->commands['pid']))->run();
 
         if (empty($process->output())) {
             return null;
         }
 
-        return collect(explode("\n", trim($process->output())));
+        $raw = explode("\n", trim($process->output()));
+
+        return collect($raw)->map(function (string $data) {
+            $data = explode(" ", $data);
+
+            return ['pid' => $data[0], 'port' => $data[1]];
+        });
     }
 
     protected function getPorts(): Collection
