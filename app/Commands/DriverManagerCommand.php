@@ -5,6 +5,7 @@ namespace App\Commands;
 use App\OperatingSystem;
 use Illuminate\Console\Command;
 use Illuminate\Process\PendingProcess;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
@@ -23,6 +24,8 @@ class DriverManagerCommand extends Command
                             {--path= : The absolute path of where to find Google Chrome Driver binary}';
 
     protected $description = 'Manage Google Chrome Driver';
+
+    protected string $port = '9515';
 
     protected array $platforms = [
         'linux' => 'linux64',
@@ -46,19 +49,16 @@ class DriverManagerCommand extends Command
             'status' => 'Status of a server',
         ]);
 
-        $cb = match ($action) {
+        $callable = match ($action) {
             'start' => $this->start(...),
             'stop' => $this->stop(...),
             'restart' => $this->restart(...),
             'status' => $this->status(...),
         };
 
-
-        $results = collect(['9515', ...$this->option('port')])
-            ->unique()
-            ->map($cb(...));
-
-        return $results->reduce(fn (int $results, int $result) => $results && $result, self::FAILURE);
+        return $this->getPorts()->map(fn (string $port) => $callable(port: $port))
+            // Reduce the result of every callable to a single SUCCESS or FAILURE value
+            ->reduce(fn (int $results, int $result) => $results && $result, self::FAILURE);
     }
 
     protected function start(string $port): int
@@ -155,6 +155,11 @@ class DriverManagerCommand extends Command
         $process = $this->command(Str::replace('{port}', $port, $this->commands['pid']))->run();
 
         return (int) trim($process->output()) ?: null;
+    }
+
+    protected function getPorts(): Collection
+    {
+        return collect([$this->port, ...$this->option('port')])->unique()->filter();
     }
 
     protected function getChromeDriverDirectory(): string
