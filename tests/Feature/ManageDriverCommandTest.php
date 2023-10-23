@@ -128,7 +128,7 @@ it('stop all the available Chrome Driver servers', function () {
 
     artisan('manage:driver', ['action' => 'kill'])
         ->expectsTable(['PID', 'PORT'], collect($data)->map(function (string $value) {
-            $values = explode(" ", $value);
+            $values = explode(' ', $value);
 
             return ['pid' => $values[0], 'port' => $values[1]];
         }))
