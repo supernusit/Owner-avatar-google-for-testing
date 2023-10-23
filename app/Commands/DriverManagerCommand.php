@@ -110,7 +110,7 @@ class DriverManagerCommand extends Command
         $pid = $this->getProcessID($port);
 
         if (empty($pid)) {
-            info("There's no server to restart on port [$port]");
+            warning("There's no server to restart on port [$port]");
 
             return self::FAILURE;
         }
@@ -131,7 +131,7 @@ class DriverManagerCommand extends Command
         $pid = $this->getProcessID($port);
 
         if (empty($pid)) {
-            info("There's no server available on port [$port]");
+            warning("There's no server available on port [$port]");
 
             return self::FAILURE;
         }
