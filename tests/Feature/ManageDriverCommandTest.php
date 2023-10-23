@@ -4,8 +4,8 @@ use Illuminate\Process\PendingProcess;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
-
 use Illuminate\Support\Str;
+
 use function Pest\Laravel\artisan;
 
 it('start a Chrome Driver server', function () {

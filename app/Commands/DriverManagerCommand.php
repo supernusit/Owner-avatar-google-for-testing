@@ -150,7 +150,6 @@ class DriverManagerCommand extends Command
     public function kill(): int
     {
         $result = $this->command(Str::replace('{port}', '', $this->commands['pid']))->run();
-;
 
         if (empty($result->output())) {
             warning("There' no servers to kill");
@@ -158,7 +157,7 @@ class DriverManagerCommand extends Command
             return self::FAILURE;
         }
 
-        if (! $this->confirm("Are you sure you want to do this?")) {
+        if (! $this->confirm('Are you sure you want to do this?')) {
             return self::SUCCESS;
         }
 
@@ -170,7 +169,6 @@ class DriverManagerCommand extends Command
 
                 $this->command(Str::replace('{pid}', $pid, $this->commands['stop']))->run();
             });
-
 
         return self::SUCCESS;
     }
