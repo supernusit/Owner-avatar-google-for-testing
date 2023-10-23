@@ -17,7 +17,7 @@ it('start a Chrome Driver server', function () {
         ->expectsOutputToContain('Google Chrome Driver server is up and running')
         ->assertSuccessful();
 
-    Process::assertRan('./chromedriver --log-level=ALL --port 9515 &');
+    Process::assertRan('./chromedriver --log-level=ALL --port=9515 &');
 });
 
 it('stop a Chrome Driver server', function () {
@@ -32,7 +32,7 @@ it('stop a Chrome Driver server', function () {
         ->doesntExpectOutputToContain("There's no server to stop on port [9515]")
         ->assertSuccessful();
 
-    Process::assertRan("ps aux | grep '[c]hromedriver --log-level=ALL --port 9515' | awk '{print $2,$14}'");
+    Process::assertRan("ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2,$13}'");
 
     Process::assertRan('kill -9 10101');
 });
@@ -49,11 +49,11 @@ it('restart a Chrome Driver server', function () {
         ->doesntExpectOutputToContain("There's no server to restart on port [9515]")
         ->assertSuccessful();
 
-    Process::assertRan("ps aux | grep '[c]hromedriver --log-level=ALL --port 9515' | awk '{print $2,$14}'");
+    Process::assertRan("ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2,$13}'");
 
     Process::assertRan('kill -9 10101');
 
-    Process::assertRan('./chromedriver --log-level=ALL --port 9515 &');
+    Process::assertRan('./chromedriver --log-level=ALL --port=9515 &');
 });
 
 test('status of Chrome Driver server', function () {
@@ -115,7 +115,7 @@ it('start 4 Chrome Driver servers', function () {
     artisan('manage:driver', ['action' => 'start', '-p' => [9515, 9516, 9517, 9518]])
         ->assertSuccessful();
 
-    Process::assertRanTimes(fn (PendingProcess $process) => Str::match('/^\.\/chromedriver --log-level=ALL --port \d+ &$/', $process->command), 4);
+    Process::assertRanTimes(fn (PendingProcess $process) => Str::match('/^\.\/chromedriver --log-level=ALL --port=\d+ &$/', $process->command), 4);
 });
 
 it('stop all the available Chrome Driver servers', function () {

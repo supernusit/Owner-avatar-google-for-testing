@@ -34,8 +34,8 @@ class DriverManagerCommand extends Command
     ];
 
     protected array $commands = [
-        'start' => './chromedriver --log-level=ALL --port {port} &',
-        'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL {options}' | awk '{print $2,$14}'",
+        'start' => './chromedriver --log-level=ALL --port={port} &',
+        'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL {options}' | awk '{print $2,$13}'",
         'stop' => 'kill -9 {pid}',
     ];
 
@@ -46,6 +46,7 @@ class DriverManagerCommand extends Command
             'stop' => 'Stop a server',
             'restart' => 'Restart a server',
             'status' => 'Status of a server',
+            'list' => 'List all the server available in the system',
             'kill' => 'Kill all the servers available in the system',
         ]);
 
@@ -207,7 +208,7 @@ class DriverManagerCommand extends Command
 
     protected function getProcessID(string $port): ?int
     {
-        $process = $this->command('pid', ['{options}' => '--port '.$port]);
+        $process = $this->command('pid', ['{options}' => '--port='.$port]);
 
         $output = explode(' ', trim($process->output()));
 
@@ -216,7 +217,7 @@ class DriverManagerCommand extends Command
 
     protected function getProcessIDs(): ?Collection
     {
-        $process = $this->command('pid', ['{pid}' => '']);
+        $process = $this->command('pid', ['{options}' => '']);
 
         if (empty($process->output())) {
             return null;
@@ -227,7 +228,7 @@ class DriverManagerCommand extends Command
         return collect($raw)->map(function (string $data) {
             $data = explode(' ', $data);
 
-            return ['pid' => $data[0], 'port' => $data[1]];
+            return ['pid' => $data[0], 'port' => Str::remove('--port=', $data[1])];
         });
     }
 
