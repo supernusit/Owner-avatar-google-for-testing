@@ -234,7 +234,7 @@ class DriverManagerCommand extends Command
 
     protected function getPorts(): Collection
     {
-        return collect([$this->port, ...$this->option('port')])->unique()->filter();
+        return collect($this->option('port') ? [...$this->option('port')] : $this->port)->unique()->filter();
     }
 
     protected function getChromeDriverDirectory(): string
