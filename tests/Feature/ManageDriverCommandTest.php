@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
 
+use Laravel\Prompts\Prompt;
 use function Pest\Laravel\artisan;
 
 it('start a Chrome Driver server', function () {
@@ -137,14 +138,27 @@ it('stop all the available Chrome Driver servers', function () {
     Process::assertRanTimes(fn (PendingProcess $process) => Str::match('/^kill -9 \d+/', $process->command), 4);
 });
 
-it('restart all the available Chrome Driver servers', function () {
-
-})->todo();
-
-it('get the status of all the available Chrome Driver servers', function () {
-
-})->todo();
-
 it('list all the available Chrome Driver servers', function () {
+    $data = collect([
+        // PID => PORT
+        '1111' => 9515,
+        '1112' => 9516,
+        '1113' => 9517,
+        '1114' => 9518,
+        '1115' => 9519,
+    ]);
 
-})->todo();
+    Process::fake([
+        'ps aux | grep *' => Process::result($data->map(fn ($port, $pid) => "$pid $port")->join("\n"))
+    ]);
+
+    Prompt::fallbackWhen($this->app->runningUnitTests());
+
+    ray($data->map(fn ($port, $pid) => [$pid,  $port])->values());
+
+    artisan('manage:driver', ['action' => 'list'])
+        ->expectsOutputToContain('Listing all the servers available')
+        ->doesntExpectOutputToContain("There' no servers available to list")
+        ->expectsTable(['PID', 'PORT'], $data->map(fn ($port, $pid) => [$pid,  $port])->values())
+        ->assertSuccessful();
+});

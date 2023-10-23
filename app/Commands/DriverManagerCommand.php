@@ -38,6 +38,7 @@ class DriverManagerCommand extends Command
         'start' => './chromedriver --log-level=ALL --port={port} &',
         'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL {port}' | awk '{print $2}'",
         'stop' => 'kill -9 {pid}',
+        'list' => "ps aux | grep '[c]hromedriver --log-level=ALL' | awk '{print $2,$13}'",
     ];
 
     public function handle(): int
@@ -55,10 +56,15 @@ class DriverManagerCommand extends Command
             'stop' => $this->stop(...),
             'restart' => $this->restart(...),
             'status' => $this->status(...),
+            'list' => $this->list(...),
             'kill' => $this->kill(...),
         };
 
-        return $this->getPorts()->map(fn (string $port) => $callable($port))
+        if ($action === 'kill' || $action === 'list') {
+            return $callable();
+        }
+
+        return $this->getPorts()->map(fn (string $port) => $callable(port: $port))
             // Reduce the result of every callable to a single SUCCESS or FAILURE value
             ->reduce(fn (int $results, int $result) => $results && $result, self::FAILURE);
     }
@@ -147,7 +153,32 @@ class DriverManagerCommand extends Command
         return self::SUCCESS;
     }
 
-    public function kill(): int
+    protected function list(): int
+    {
+        info('Listing all the servers available');
+
+        $result = $this->command($this->commands['list'])->run();
+
+        if (empty($result->output())) {
+            warning("There' no servers available to list");
+
+            return self::FAILURE;
+        }
+
+        $rows = collect(explode("\n", trim($result->output())))
+            ->map(function (string $value) {
+                $values = explode(" ", trim($value));
+
+                // PID => PORT
+                return [$values[0], Str::remove('--port=', $values[1])];
+            });
+
+        $this->table(['PID', 'PORT'], $rows);
+
+        return self::SUCCESS;
+    }
+
+    protected function kill(): int
     {
         $result = $this->command(Str::replace('{port}', '', $this->commands['pid']))->run();
 
@@ -183,6 +214,17 @@ class DriverManagerCommand extends Command
         $process = $this->command(Str::replace('{port}', '--port='.$port, $this->commands['pid']))->run();
 
         return (int) trim($process->output()) ?: null;
+    }
+
+    protected function getProcessIDs(): ?Collection
+    {
+        $process = $this->command(Str::replace('{port}', '', $this->commands['pid']))->run();
+
+        if (empty($process->output())) {
+            return null;
+        }
+
+        return collect(explode("\n", trim($process->output())));
     }
 
     protected function getPorts(): Collection
