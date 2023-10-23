@@ -4,9 +4,6 @@ namespace App\Commands;
 
 use App\OperatingSystem;
 use Illuminate\Console\Command;
-use Illuminate\Process\FakeProcessResult;
-use Illuminate\Process\PendingProcess;
-use Illuminate\Process\ProcessResult;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
