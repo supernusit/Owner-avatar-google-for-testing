@@ -19,6 +19,7 @@ class DriverManagerCommand extends Command
 {
     protected $signature = 'manage:driver
                             {action? : The action you want to perform on Google\'s Chrome Driver}
+                            {--p|port=* : The port from where to start a new server}
                             {--path= : The absolute path of where to find Google Chrome Driver binary}';
 
     protected $description = 'Manage Google Chrome Driver';
@@ -31,8 +32,8 @@ class DriverManagerCommand extends Command
     ];
 
     protected array $commands = [
-        'start' => './chromedriver --log-level=ALL --port=9515 &',
-        'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2}'",
+        'start' => './chromedriver --log-level=ALL --port={port} &',
+        'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL --port={port}' | awk '{print $2}'",
         'stop' => 'kill -9 {pid}',
     ];
 
@@ -45,81 +46,86 @@ class DriverManagerCommand extends Command
             'status' => 'Status of a server',
         ]);
 
-        $result = match ($action) {
-            'start' => $this->start(),
-            'stop' => $this->stop(),
-            'restart' => $this->restart(),
-            'status' => $this->status(),
+        $cb = match ($action) {
+            'start' => $this->start(...),
+            'stop' => $this->stop(...),
+            'restart' => $this->restart(...),
+            'status' => $this->status(...),
         };
 
-        return $result;
+
+        $results = collect(['9515', ...$this->option('port')])
+            ->unique()
+            ->map($cb(...));
+
+        return $results->reduce(fn (int $results, int $result) => $results && $result, self::FAILURE);
     }
 
-    protected function start(): int
+    protected function start(string $port): int
     {
-        if ($pid = $this->getProcessID()) {
-            warning("[PID: $pid]: There's a server running already on port [9515]");
+        if ($pid = $this->getProcessID($port)) {
+            warning("[PID: $pid]: There's a server running already on port [$port]");
 
             return self::FAILURE;
         }
 
-        intro('Stating Google Chrome Driver on port [9515]');
+        intro("Stating Google Chrome Driver on port [$port]");
 
-        $this->command($this->commands['start'])->run();
+        $this->command(Str::replace('{port}', $port, $this->commands['start']))->run();
 
         info('Google Chrome Driver server is up and running');
 
         return self::SUCCESS;
     }
 
-    public function stop(): int
+    public function stop(string $port): int
     {
-        intro('Stopping Google Chrome Driver on port [9515]');
+        intro("Stopping Google Chrome Driver on port [$port]");
 
-        $pid = $this->getProcessID();
+        $pid = $this->getProcessID($port);
 
         if (empty($pid)) {
-            warning("There's no server to stop on port [9515]");
+            warning("There's no server to stop on port [$port]");
 
             return self::FAILURE;
         }
 
         $this->command(Str::replace('{pid}', $pid, $this->commands['stop']))->run();
 
-        info('Google Chrome Driver server stopped on port [9515]');
+        info("Google Chrome Driver server stopped on port [$port]");
 
         return self::SUCCESS;
     }
 
-    protected function restart(): int
+    protected function restart(string $port): int
     {
-        intro('Restarting Google Chrome Driver on port [9515]');
+        intro("Restarting Google Chrome Driver on port [$port]");
 
-        $pid = $this->getProcessID();
+        $pid = $this->getProcessID($port);
 
         if (empty($pid)) {
-            info("There's no server to restart on port [9515]");
+            info("There's no server to restart on port [$port]");
 
             return self::FAILURE;
         }
 
         $this->command(Str::replace('{pid}', $pid, $this->commands['stop']))->run();
 
-        $this->command($this->commands['start'])->run();
+        $this->command(Str::replace('{port}', $port, $this->commands['start']))->run();
 
-        info('Google Chrome Driver server restarted on port [9515]');
+        info("Google Chrome Driver server restarted on port [$port]");
 
         return self::SUCCESS;
     }
 
-    protected function status(): int
+    protected function status(string $port): int
     {
-        intro('Getting Google Chrome Driver status on port [9515]');
+        intro("Getting Google Chrome Driver status on port [$port]");
 
-        $pid = $this->getProcessID();
+        $pid = $this->getProcessID($port);
 
         if (empty($pid)) {
-            info("There's no server available on port [9515]");
+            info("There's no server available on port [$port]");
 
             return self::FAILURE;
         }
@@ -144,9 +150,9 @@ class DriverManagerCommand extends Command
         return Process::command($cmd)->path($this->getChromeDriverDirectory());
     }
 
-    protected function getProcessID(): ?int
+    protected function getProcessID(string $port): ?int
     {
-        $process = $this->command($this->commands['pid'])->run();
+        $process = $this->command(Str::replace('{port}', $port, $this->commands['pid']))->run();
 
         return (int) trim($process->output()) ?: null;
     }
