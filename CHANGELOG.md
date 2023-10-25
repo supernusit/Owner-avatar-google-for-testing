@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.5.0](https://github.com/asciito/google-for-testing/compare/v0.4.1...v0.5.0) (2023-10-25)
+
+
+### Features
+
+* add driver manager command ([81aa1e1](https://github.com/asciito/google-for-testing/commit/81aa1e17bc43f59af6b0a54a9b22b9aff390c838))
+* add driver manager command ([0c3e8f6](https://github.com/asciito/google-for-testing/commit/0c3e8f61c8c9356e2e79c4ea2e1b7d791199974a))
+
+
+### Bug Fixes
+
+* installCommand.php to choose correct component to install ([059ea60](https://github.com/asciito/google-for-testing/commit/059ea605179afdc86d837d09ce74ce7a249a59cd))
+
+
+### Miscellaneous Chores
+
+* fix styling ([34d47c8](https://github.com/asciito/google-for-testing/commit/34d47c8a70dfc4034b33a69249ffb8e77d3c47f6))
+* fix styling ([502a4d6](https://github.com/asciito/google-for-testing/commit/502a4d62e8c4aced7c726a8e3b53801496b0e588))
+* fix styling ([27a1f94](https://github.com/asciito/google-for-testing/commit/27a1f94aa32b3e83f31fe985f47fecc5868f3550))
+* fix styling ([a3d791e](https://github.com/asciito/google-for-testing/commit/a3d791ed7795450d395d53c646a96c16400b7227))
+* fix styling ([f62246a](https://github.com/asciito/google-for-testing/commit/f62246a4f4b602c210d40a31a8fe832635d19ac2))
+* fix styling ([6b2cb86](https://github.com/asciito/google-for-testing/commit/6b2cb86901e3a8f4d385d65a4897326f78894e16))
+
 ## [0.4.1](https://github.com/asciito/google-for-testing/compare/v0.4.0...v0.4.1) (2023-10-21)
 
 
