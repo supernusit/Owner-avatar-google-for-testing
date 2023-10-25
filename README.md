@@ -200,7 +200,6 @@ The second one is just to specify where to search for the Chrome Driver binary, 
 This option will only search for the binary `chromedriver` in the path specify, so be sure to have this binary available
 and named correctly.
 
----
 
 ## License
 
