@@ -67,7 +67,7 @@ abstract class InstallCommand extends Command
 
         try {
             spin(
-                callback: fn () => $downloadable->download(GoogleDownloadable::BROWSER, $this->getDownloadDirectory(), $this->platforms[$os], true),
+                callback: fn () => $downloadable->download($this->component, $this->getDownloadDirectory(), $this->platforms[$os], true),
                 message: "Downloading Google Chrome {$this->getComponentName()} [$version]"
             );
 
