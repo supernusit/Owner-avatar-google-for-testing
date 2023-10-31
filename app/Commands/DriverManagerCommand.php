@@ -137,7 +137,7 @@ class DriverManagerCommand extends Command
             return self::FAILURE;
         }
 
-        $response = Http::get('http://localhost:9515/status');
+        $response = Http::get("http://localhost:$port/status");
 
         $data = $response->json('value');
 
