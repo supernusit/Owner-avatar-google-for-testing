@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.1](https://github.com/asciito/google-for-testing/compare/v0.5.0...v0.5.1) (2023-11-01)
+
+
+### Bug Fixes
+
+* actions on Windows machines ([3205fb0](https://github.com/asciito/google-for-testing/commit/3205fb01b5735389a48c31b934f281dbf22b05d5))
+* remove the hardcoded PORT ([8b3a9bf](https://github.com/asciito/google-for-testing/commit/8b3a9bf439aa8e03b290bc81dcf7fb770227b703))
+
 ## [0.5.0](https://github.com/asciito/google-for-testing/compare/v0.4.1...v0.5.0) (2023-10-25)
 
 
