@@ -34,8 +34,8 @@ class DriverManagerCommand extends Command
     ];
 
     protected array $commands = [
-        'start' => './chromedriver --log-level=ALL --port={port} &',
-        'pid' => "ps aux | grep '[c]hromedriver --log-level=ALL {options}' | awk '{print $2,$13}'",
+        'start' => './{binary} --log-level=ALL --port={port} &',
+        'pid' => "ps aux | grep '{binary} --log-level=ALL {options}' | awk '{print $2,$13}'",
         'stop' => 'kill -9 {pid}',
     ];
 
@@ -85,6 +85,9 @@ class DriverManagerCommand extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * @throws \Exception if you're on a Windows machine (OS)
+     */
     public function stop(string $port): int
     {
         intro("Stopping Google Chrome Driver on port [$port]");
@@ -129,7 +132,11 @@ class DriverManagerCommand extends Command
     {
         intro("Getting Google Chrome Driver status on port [$port]");
 
-        $pid = $this->getProcessID($port);
+        try {
+            $pid = $this->getProcessID($port);
+        } catch (\Exception) {
+            warning('We are running on windows and we cannot be sure if the server is running, but we will try to check');
+        }
 
         if (empty($pid)) {
             warning("There's no server available on port [$port]");
@@ -152,6 +159,9 @@ class DriverManagerCommand extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * @throws \Exception if you're on a Windows machine (OS)
+     */
     protected function list(): int
     {
         info('Listing all the servers available');
@@ -169,6 +179,9 @@ class DriverManagerCommand extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * @throws \Exception if you're on a Windows machine (OS)
+     */
     protected function kill(): int
     {
         $pids = $this->getProcessIDs();
@@ -199,6 +212,14 @@ class DriverManagerCommand extends Command
 
     protected function command(string $cmd, array $with)
     {
+        $binary = $this->getBinary();
+
+        if ($cmd === 'pid') {
+            $binary = Str::of($binary)->replaceFirst('c', '[c]');
+        }
+
+        $with = array_merge($with, ['{binary}' => $binary]);
+
         return Process::command(
             Str::replace(
                 collect($with)->keys(),
@@ -210,6 +231,10 @@ class DriverManagerCommand extends Command
 
     protected function getProcessID(string $port): ?int
     {
+        if ($this->onWindows()) {
+            throw new \Exception('We cannot get a  server PID on Windows');
+        }
+
         $process = $this->command('pid', ['{options}' => '--port='.$port]);
 
         $output = explode(' ', trim($process->output()));
@@ -219,6 +244,10 @@ class DriverManagerCommand extends Command
 
     protected function getProcessIDs(): ?Collection
     {
+        if ($this->onWindows()) {
+            throw new \Exception('We cannot get the servers PID on Windows');
+        }
+
         $process = $this->command('pid', ['{options}' => '']);
 
         if (empty($process->output())) {
@@ -237,6 +266,16 @@ class DriverManagerCommand extends Command
     protected function getPorts(): Collection
     {
         return collect($this->option('port') ? [...$this->option('port')] : $this->port)->unique()->filter();
+    }
+
+    protected function onWindows(): bool
+    {
+        return OperatingSystem::onWindows();
+    }
+
+    protected function getBinary(): string
+    {
+        return 'chromedriver'.($this->onWindows() ? '.exe' : '');
     }
 
     protected function getChromeDriverDirectory(): string
