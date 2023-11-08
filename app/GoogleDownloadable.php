@@ -62,19 +62,21 @@ class GoogleDownloadable
         if ($component & static::BROWSER) {
             $url = $this->getChromeBrowserURL($platform);
             $filename = join_paths($to, Str::afterLast($url, '/'));
-
-            download($url, $filename);
-
-            $unzip && unzip($filename);
         }
 
         if ($component & static::DRIVER) {
             $url = $this->getChromeDriverURL($platform);
             $filename = join_paths($to, Str::afterLast($url, '/'));
+        }
 
-            download($url, $filename);
+        download($url, $filename);
 
-            $unzip && unzip($filename);
+        if ($unzip) {
+            unzip($filename);
+
+            if ($component & static::DRIVER) {
+                chmod(join_paths(Str::beforeLast($filename, '.'), 'chromedriver'), 0555);
+            }
         }
     }
 
