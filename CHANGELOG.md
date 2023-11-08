@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/asciito/google-for-testing/compare/v0.5.1...v0.5.2) (2023-11-08)
+
+
+### Bug Fixes
+
+* add missing error handling ([f2b904a](https://github.com/asciito/google-for-testing/commit/f2b904af6af3fa45b797aec290878c73e8a7ccc1))
+
 ## [0.5.1](https://github.com/asciito/google-for-testing/compare/v0.5.0...v0.5.1) (2023-11-01)
 
 
