@@ -41,6 +41,12 @@ There are three options available to change the way the command works.
 
 - **`--ver=[VER]`**:
 This option by default is set to `115.0.5763.0` in both commands.
+If you provide a milestone version, this will trigger a search box to select all the versions available.
+</br>
+</br>
+**Example**
+![Alt text](art/search-box.png)
+
     > **Note**:
     For the `install:driver` command, the default version it's really important, this is the started version from where you can get
     the `chromedriver` binary, before that version, we don't have access to it (for now).
