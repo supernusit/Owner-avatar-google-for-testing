@@ -2,8 +2,10 @@
 
 namespace App\Commands;
 
+use App\Commands\Exceptions\FailCommandException;
 use App\OperatingSystem;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Process\ProcessResult;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
@@ -14,6 +16,7 @@ use function Laravel\Prompts\info;
 use function Laravel\Prompts\intro;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\warning;
+use function Termwind\render;
 
 class DriverManagerCommand extends Command
 {
@@ -59,13 +62,33 @@ class DriverManagerCommand extends Command
             'kill' => $this->kill(...),
         };
 
-        if ($action === 'kill' || $action === 'list') {
-            return $callable();
-        }
+        try {
+            if ($action === 'kill' || $action === 'list') {
+                return $callable();
+            }
 
-        return $this->getPorts()->map(fn (string $port) => $callable(port: $port))
-            // Reduce the result of every callable to a single SUCCESS or FAILURE value
-            ->reduce(fn (int $results, int $result) => $results && $result, self::FAILURE);
+            return $this->getPorts()->map(fn (string $port) => $callable(port: $port))
+                // Reduce the result of every callable to a single SUCCESS or FAILURE value
+                ->reduce(fn (int $results, int $result) => $results && $result, self::FAILURE);
+        } catch (FailCommandException $e) {
+            render(<<<HTML
+            <div>
+                <p class="flex space-x-2">
+                    <span class="px-1 bg-red-600 text-white">CMD ERROR</span>
+
+                    <span>{$e->getCommand()}</span>
+                </p>
+
+                <p>{$this->getError()}</p>
+            </div>
+            HTML);
+
+            return self::FAILURE;
+        } catch (\Exception $e) {
+            error($e->getMessage());
+
+            return self::FAILURE;
+        }
     }
 
     protected function start(string $port): int
@@ -210,7 +233,7 @@ class DriverManagerCommand extends Command
         return self::SUCCESS;
     }
 
-    protected function command(string $cmd, array $with)
+    protected function command(string $cmd, array $with): ProcessResult
     {
         $binary = $this->getBinary();
 
@@ -220,13 +243,21 @@ class DriverManagerCommand extends Command
 
         $with = array_merge($with, ['{binary}' => $binary]);
 
-        return Process::command(
+        $result = Process::command(
             Str::replace(
                 collect($with)->keys(),
                 collect($with)->values(),
                 $this->commands[$cmd]
             )
-        )->path($this->getChromeDriverDirectory())->run();
+        )
+            ->path($this->getChromeDriverDirectory())
+            ->run();
+
+        if ($result->failed()) {
+            throw new FailCommandException($result);
+        }
+
+        return $result;
     }
 
     protected function getProcessID(string $port): ?int
@@ -249,10 +280,6 @@ class DriverManagerCommand extends Command
         }
 
         $process = $this->command('pid', ['{options}' => '']);
-
-        if (empty($process->output())) {
-            return null;
-        }
 
         $raw = explode("\n", trim($process->output()));
 
