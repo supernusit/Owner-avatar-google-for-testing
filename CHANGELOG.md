@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.3](https://github.com/asciito/google-for-testing/compare/v0.5.2...v0.5.3) (2023-11-08)
+
+
+### Bug Fixes
+
+* change permissions to chromedriver binary ([fc66cee](https://github.com/asciito/google-for-testing/commit/fc66cee4eacb6bca1c77899eec3ae55b0b9dd7d7))
+
 ## [0.5.2](https://github.com/asciito/google-for-testing/compare/v0.5.1...v0.5.2) (2023-11-08)
 
 
