@@ -7,6 +7,7 @@ use App\OperatingSystem;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Process\ProcessResult;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
@@ -93,8 +94,14 @@ class DriverManagerCommand extends Command
 
     protected function start(string $port): int
     {
-        if ($pid = $this->getProcessID($port)) {
-            warning("[PID: $pid]: There's a server running already on port [$port]");
+        try {
+            if ($pid = $this->getProcessID($port)) {
+                warning("[PID: $pid]: There's a server running already on port [$port]");
+
+                return self::FAILURE;
+            }
+        } catch (\Exception) {
+            warning('We are running on windows and we cannot start the server');
 
             return self::FAILURE;
         }
@@ -115,7 +122,13 @@ class DriverManagerCommand extends Command
     {
         intro("Stopping Google Chrome Driver on port [$port]");
 
-        $pid = $this->getProcessID($port);
+        try {
+            $pid = $this->getProcessID($port);
+        } catch (\Exception) {
+            warning('We are running on windows and we cannot stop the server');
+
+            return self::FAILURE;
+        }
 
         if (empty($pid)) {
             warning("There's no server to stop on port [$port]");
@@ -134,7 +147,13 @@ class DriverManagerCommand extends Command
     {
         intro("Restarting Google Chrome Driver on port [$port]");
 
-        $pid = $this->getProcessID($port);
+        try {
+            $pid = $this->getProcessID($port);
+        } catch (\Exception) {
+            warning('We are running on windows and we cannot restart the server');
+
+            return self::FAILURE;
+        }
 
         if (empty($pid)) {
             warning("There's no server to restart on port [$port]");
@@ -161,7 +180,7 @@ class DriverManagerCommand extends Command
             warning('We are running on windows and we cannot be sure if the server is running, but we will try to check');
         }
 
-        if (empty($pid)) {
+        if (! $this->onWindows() && empty($pid)) {
             warning("There's no server available on port [$port]");
 
             return self::FAILURE;
@@ -189,7 +208,13 @@ class DriverManagerCommand extends Command
     {
         info('Listing all the servers available');
 
-        $result = $this->getProcessIDs();
+        try {
+            $result = $this->getProcessIDs();
+        } catch (\Exception) {
+            warning('We are running on windows and we cannot list the servers');
+
+            return self::FAILURE;
+        }
 
         if (empty($result)) {
             warning("There' no servers available to list");
@@ -207,7 +232,13 @@ class DriverManagerCommand extends Command
      */
     protected function kill(): int
     {
-        $pids = $this->getProcessIDs();
+        try {
+            $pids = $this->getProcessIDs();
+        } catch (\Exception) {
+            warning('We are running on windows and we cannot stop the servers');
+
+            return self::FAILURE;
+        }
 
         if (empty($pids)) {
             warning("There' no servers to kill");
@@ -307,10 +338,13 @@ class DriverManagerCommand extends Command
 
     protected function getChromeDriverDirectory(): string
     {
+        $directory = join_paths(getenv('HOME'), '.google-for-testing');
+
+        File::ensureDirectoryExists($directory);
+
         return $this->option('path')
             ?? join_paths(
-                getenv('HOME'),
-                '.google-for-testing',
+                $directory,
                 'chromedriver-'.$this->platforms[OperatingSystem::id()],
             );
     }
