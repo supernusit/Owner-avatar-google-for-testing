@@ -2,10 +2,10 @@
 
 use Illuminate\Process\PendingProcess;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\File;
 use Laravel\Prompts\Prompt;
 
 use function Pest\Laravel\artisan;
