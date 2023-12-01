@@ -194,7 +194,7 @@ This will spin-up two servers, one in port `9515`, and the second one in port `9
 be used with the other three other actions: `stop`, `restart`, and `status`.
 
 > **Note**:
-> This comand can only be use with the first four actions: `start`, `stop`, `restart`, and `status`.
+> This option only can be used with the first four actions: `start`, `stop`, `restart`, and `status`.
 
 The second one is just to specify where to search for the Chrome Driver binary, you just need to specify the option
 `--path`.
