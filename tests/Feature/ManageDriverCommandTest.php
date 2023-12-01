@@ -18,7 +18,7 @@ it('start a Chrome Driver server', function () {
         ->assertSuccessful();
 
     Process::assertRan('./chromedriver --log-level=ALL --port=9515 &');
-});
+})->skipOnWindows();
 
 it('stop a Chrome Driver server', function () {
     Process::fake([
@@ -35,7 +35,7 @@ it('stop a Chrome Driver server', function () {
     Process::assertRan("ps aux | grep '[c]hromedriver --log-level=ALL --port=9515' | awk '{print $2,$13}'");
 
     Process::assertRan('kill -9 10101');
-});
+})->skipOnWindows();
 
 it('restart a Chrome Driver server', function () {
     Process::fake([
@@ -54,7 +54,7 @@ it('restart a Chrome Driver server', function () {
     Process::assertRan('kill -9 10101');
 
     Process::assertRan('./chromedriver --log-level=ALL --port=9515 &');
-});
+})->skipOnWindows();
 
 test('status of Chrome Driver server', function () {
     Process::fake([
@@ -72,7 +72,7 @@ test('status of Chrome Driver server', function () {
         ->expectsOutputToContain('Google Chrome server status: [OK]')
         ->doesntExpectOutputToContain("There's no server available on port [9515]")
         ->assertSuccessful();
-});
+})->skipOnWindows();
 
 it('can\'t start a new Chrome Driver server if there\'s one already started', function () {
     Process::fake([
@@ -83,7 +83,7 @@ it('can\'t start a new Chrome Driver server if there\'s one already started', fu
         ->expectsOutputToContain("[PID: 10101]: There's a server running already on port [9515]")
         ->doesntExpectOutput('Stating Google Chrome Driver on port [9515]')
         ->assertFailed();
-});
+})->skipOnWindows();
 
 it('can\'t stop a Chrome Driver server if there\'s no server already started', function () {
     Process::fake();
@@ -91,7 +91,7 @@ it('can\'t stop a Chrome Driver server if there\'s no server already started', f
     artisan('manage:driver', ['action' => 'stop'])
         ->expectsOutputToContain("There's no server to stop")
         ->assertFailed();
-});
+})->skipOnWindows();
 
 it('can\'t restart a Chrome Driver server if there\'s no server already started', function () {
     Process::fake();
@@ -99,7 +99,7 @@ it('can\'t restart a Chrome Driver server if there\'s no server already started'
     artisan('manage:driver', ['action' => 'stop'])
         ->expectsOutputToContain("There's no server to stop on port [9515]")
         ->assertFailed();
-});
+})->skipOnWindows();
 
 it('can\'t get the status of Chrome Driver server if there\'s no server already started', function () {
     Process::fake();
@@ -107,7 +107,7 @@ it('can\'t get the status of Chrome Driver server if there\'s no server already 
     artisan('manage:driver', ['action' => 'restart'])
         ->expectsOutputToContain("There's no server to restart on port [9515]")
         ->assertFailed();
-});
+})->skipOnWindows();
 
 it('start 4 Chrome Driver servers', function () {
     Process::fake();
@@ -116,7 +116,7 @@ it('start 4 Chrome Driver servers', function () {
         ->assertSuccessful();
 
     Process::assertRanTimes(fn (PendingProcess $process) => Str::match('/^\.\/chromedriver --log-level=ALL --port=\d+ &$/', $process->command), 4);
-});
+})->skipOnWindows();
 
 it('stop all the available Chrome Driver servers', function () {
     $data = ['9991 1111', '9992 1112', '9993 1113', '9994 1114'];
@@ -143,7 +143,7 @@ it('stop all the available Chrome Driver servers', function () {
     Process::assertRan(fn (PendingProcess $process) => Str::match('/^ps aux .*/', $process->command));
 
     Process::assertRanTimes(fn (PendingProcess $process) => Str::match('/^kill -9 \d+/', $process->command), 4);
-});
+})->skipOnWindows();
 
 it('list all the available Chrome Driver servers', function () {
     $data = collect([
@@ -166,4 +166,4 @@ it('list all the available Chrome Driver servers', function () {
         ->doesntExpectOutputToContain("There' no servers available to list")
         ->expectsTable(['PID', 'PORT'], $data->map(fn ($port, $pid) => [$pid,  $port])->values())
         ->assertSuccessful();
-});
+})->skipOnWindows();
