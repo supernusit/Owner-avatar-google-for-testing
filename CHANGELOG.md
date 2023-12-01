@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.4](https://github.com/asciito/google-for-testing/compare/v0.5.3...v0.5.4) (2023-12-01)
+
+
+### Bug Fixes
+
+* remove testing keyword ([4bcc3b7](https://github.com/asciito/google-for-testing/commit/4bcc3b78818b95ba2ba7beb10a29f0477e774d27))
+* remove testing keyword ([60c2409](https://github.com/asciito/google-for-testing/commit/60c240966e9830e9825cd1b4deb8c04efe175811))
+
 ## [0.5.3](https://github.com/asciito/google-for-testing/compare/v0.5.2...v0.5.3) (2023-11-08)
 
 
