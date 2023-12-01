@@ -5,9 +5,12 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 use Laravel\Prompts\Prompt;
 
 use function Pest\Laravel\artisan;
+
+afterAll(fn () => File::deleteDirectory(join_paths(getenv('HOME'), '.google-for-testing')));
 
 it('start a Chrome Driver server', function () {
     Process::fake();
