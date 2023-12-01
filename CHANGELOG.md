@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.5.5](https://github.com/asciito/google-for-testing/compare/v0.5.4...v0.5.5) (2023-12-01)
+
+
+### Bug Fixes
+
+* add matrix to test on windows also ([9edc8c0](https://github.com/asciito/google-for-testing/commit/9edc8c049db2d8976f5983b3a70a56f5f14619c4))
+* windows support to manage driver ([d194902](https://github.com/asciito/google-for-testing/commit/d1949022bd56bf9d888948382343e49389939263))
+
+
+### Miscellaneous Chores
+
+* fix styling ([fc8d236](https://github.com/asciito/google-for-testing/commit/fc8d236ddeca2406f27e2e0204d04751da366ba8))
+* fix styling ([1092dc7](https://github.com/asciito/google-for-testing/commit/1092dc706d879bc2d89e8e2d41e2e831afcac06d))
+* refactor methods for windows ([162b7ea](https://github.com/asciito/google-for-testing/commit/162b7eae0856df35ec7600d375c64baeece01449))
+
 ## [0.5.4](https://github.com/asciito/google-for-testing/compare/v0.5.3...v0.5.4) (2023-12-01)
 
 
