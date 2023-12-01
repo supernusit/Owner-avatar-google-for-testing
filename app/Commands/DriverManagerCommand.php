@@ -100,7 +100,7 @@ class DriverManagerCommand extends Command
                 return self::FAILURE;
             }
         } catch (\Exception) {
-            warning("We are running on windows and we cannot start the server");
+            warning('We are running on windows and we cannot start the server');
 
             return self::FAILURE;
         }
@@ -124,7 +124,7 @@ class DriverManagerCommand extends Command
         try {
             $pid = $this->getProcessID($port);
         } catch (\Exception) {
-            warning("We are running on windows and we cannot stop the server");
+            warning('We are running on windows and we cannot stop the server');
 
             return self::FAILURE;
         }
@@ -149,7 +149,7 @@ class DriverManagerCommand extends Command
         try {
             $pid = $this->getProcessID($port);
         } catch (\Exception) {
-            warning("We are running on windows and we cannot restart the server");
+            warning('We are running on windows and we cannot restart the server');
 
             return self::FAILURE;
         }
@@ -210,7 +210,7 @@ class DriverManagerCommand extends Command
         try {
             $result = $this->getProcessIDs();
         } catch (\Exception) {
-            warning("We are running on windows and we cannot list the servers");
+            warning('We are running on windows and we cannot list the servers');
 
             return self::FAILURE;
         }
@@ -234,7 +234,7 @@ class DriverManagerCommand extends Command
         try {
             $pids = $this->getProcessIDs();
         } catch (\Exception) {
-            warning("We are running on windows and we cannot stop the servers");
+            warning('We are running on windows and we cannot stop the servers');
 
             return self::FAILURE;
         }
