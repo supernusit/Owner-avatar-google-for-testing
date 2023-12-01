@@ -7,6 +7,7 @@ use App\OperatingSystem;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Process\ProcessResult;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
@@ -337,10 +338,13 @@ class DriverManagerCommand extends Command
 
     protected function getChromeDriverDirectory(): string
     {
+        $directory = join_paths(getenv('HOME'), '.google-for-testing');
+
+        File::ensureDirectoryExists($directory);
+
         return $this->option('path')
             ?? join_paths(
-                getenv('HOME'),
-                '.google-for-testing',
+                $directory,
                 'chromedriver-'.$this->platforms[OperatingSystem::id()],
             );
     }
