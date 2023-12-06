@@ -3,7 +3,7 @@
 namespace App\Commands;
 
 use App\Commands\Exceptions\FailCommandException;
-use App\Commands\Exceptions\OnWindowException;
+use App\Commands\Exceptions\DoesNotSupportWindowsException;
 use App\OperatingSystem;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Process\ProcessResult;
@@ -101,7 +101,7 @@ class DriverManagerCommand extends Command
 
                 return self::FAILURE;
             }
-        } catch (OnWindowException) {
+        } catch (DoesNotSupportWindowsException) {
             warning('We are running on windows and we cannot start the server');
 
             return self::FAILURE;
@@ -125,7 +125,7 @@ class DriverManagerCommand extends Command
 
         try {
             $pid = $this->getProcessID($port);
-        } catch (OnWindowException) {
+        } catch (DoesNotSupportWindowsException) {
             warning('We are running on windows and we cannot stop the server');
 
             return self::FAILURE;
@@ -150,7 +150,7 @@ class DriverManagerCommand extends Command
 
         try {
             $pid = $this->getProcessID($port);
-        } catch (OnWindowException) {
+        } catch (DoesNotSupportWindowsException) {
             warning('We are running on windows and we cannot restart the server');
 
             return self::FAILURE;
@@ -177,7 +177,7 @@ class DriverManagerCommand extends Command
 
         try {
             $pid = $this->getProcessID($port);
-        } catch (OnWindowException) {
+        } catch (DoesNotSupportWindowsException) {
             warning('We are running on windows and we cannot be sure if the server is running, but we will try to check');
         }
 
@@ -211,7 +211,7 @@ class DriverManagerCommand extends Command
 
         try {
             $result = $this->getProcessIDs();
-        } catch (OnWindowException) {
+        } catch (DoesNotSupportWindowsException) {
             warning('We are running on windows and we cannot list the servers');
 
             return self::FAILURE;
@@ -235,7 +235,7 @@ class DriverManagerCommand extends Command
     {
         try {
             $pids = $this->getProcessIDs();
-        } catch (OnWindowException) {
+        } catch (DoesNotSupportWindowsException) {
             warning('We are running on windows and we cannot stop the servers');
 
             return self::FAILURE;
@@ -295,7 +295,7 @@ class DriverManagerCommand extends Command
     protected function getProcessID(string $port): ?int
     {
         if ($this->onWindows()) {
-            throw new OnWindowException;
+            throw new DoesNotSupportWindowsException;
         }
 
         $process = $this->command('pid', ['{options}' => '--port='.$port]);
@@ -308,7 +308,7 @@ class DriverManagerCommand extends Command
     protected function getProcessIDs(): ?Collection
     {
         if ($this->onWindows()) {
-            throw new OnWindowException;
+            throw new DoesNotSupportWindowsException;
         }
 
         $process = $this->command('pid', ['{options}' => '']);

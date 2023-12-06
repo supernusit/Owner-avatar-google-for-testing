@@ -2,7 +2,7 @@
 
 namespace App\Commands\Exceptions;
 
-class OnWindowException extends \Exception
+class DoesNotSupportWindowsException extends \Exception
 {
     public function __construct()
     {
