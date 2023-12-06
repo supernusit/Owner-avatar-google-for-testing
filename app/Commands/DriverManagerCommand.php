@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Exceptions\FailCommandException;
 use App\Commands\Exceptions\DoesNotSupportWindowsException;
+use App\Commands\Exceptions\FailCommandException;
 use App\OperatingSystem;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Process\ProcessResult;
