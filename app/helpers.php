@@ -64,7 +64,7 @@ if (! function_exists('unzip')) {
      * @param  string  $filename The file name of the ZIP file
      * @param  ?string  $to The location where to extract the content
      */
-    function unzip(string $filename, string $to = null): void
+    function unzip(string $filename, ?string $to = null): void
     {
         if (! extension_loaded('zip')) {
             throw new \RuntimeException('Extension [ext-zip] not found');

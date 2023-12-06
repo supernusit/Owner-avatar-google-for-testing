@@ -119,7 +119,7 @@ abstract class InstallCommand extends Command
         return GoogleForTesting::getVersion($version);
     }
 
-    protected function getBasePath(string $path = null): string
+    protected function getBasePath(?string $path = null): string
     {
         $folder = join_paths(getenv('HOME'), '.google-for-testing');
 
