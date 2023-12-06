@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.5.6](https://github.com/asciito/google-for-testing/compare/v0.5.5...v0.5.6) (2023-12-06)
+
+
+### Bug Fixes
+
+* change generic exception for a descriptive one ([e9dd0e6](https://github.com/asciito/google-for-testing/commit/e9dd0e6e666c9e030f0feef7d42ef70ec8b6a3bb))
+* typo in note ([afb01ef](https://github.com/asciito/google-for-testing/commit/afb01efcc5928686557339810d447ee83f28af27))
+* typo in note ([ec35f6e](https://github.com/asciito/google-for-testing/commit/ec35f6ecfa09623acf60b2d04f08ed0d6c062b92))
+
+
+### Miscellaneous Chores
+
+* build binary ([907d022](https://github.com/asciito/google-for-testing/commit/907d022b32a684f7973bf00c418e2c731297d902))
+* fix styling ([597b120](https://github.com/asciito/google-for-testing/commit/597b120e14bb8f3e586987f76340c73adcb623b8))
+* refactor exception class ([f53d58f](https://github.com/asciito/google-for-testing/commit/f53d58f162d72dfe1243faaa2fedb909bf074503))
+
 ## [0.5.5](https://github.com/asciito/google-for-testing/compare/v0.5.4...v0.5.5) (2023-12-01)
 
 
